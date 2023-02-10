@@ -39,36 +39,20 @@ public class Main {
         }
 
         Range range1 = new Range(1, 20);
-        Range range2 = new Range(4, 12);
-        Range range3 = new Range().getRangeCrossing(range1, range2);
-        Range range4 = new Range();
+        Range range2 = new Range(1, 32);
 
-        if (range3 == null) {
+        Range intersectionResult = range1.getIntersection(range2);
+
+        if (intersectionResult == null) {
             System.out.println("Интервалы не пересекаются");
         } else {
-            System.out.println("Пересечение интервалов равно: (" + range3.getFrom() + ", " + range3.getTo() + ")");
+            System.out.println("Пересечение интервалов равно: " + intersectionResult);
         }
 
-        Range[] rangeArray1 = range4.getRangeCombining(range1, range2);
+        Range[] unionResult = range1.getUnion(range2);
+        System.out.println("Объединение интервалов равно: " + Range.toString(unionResult));
 
-        if (rangeArray1.length == 1) {
-            System.out.println("Объединение интервалов равно: (" +
-                    rangeArray1[0].getFrom() + ", " + rangeArray1[0].getTo() + ")");
-        } else {
-            System.out.println("Объединение интервалов равно: (" + rangeArray1[0].getFrom() + ", " +
-                    rangeArray1[0].getTo() + ") и (" + rangeArray1[1].getFrom() + ", " + rangeArray1[1].getTo() + ")");
-        }
-
-        Range[] rangeArray2 = range4.getRangeDifference(range1, range2);
-
-        if (rangeArray2 == null) {
-            System.out.println("Пустое множество");
-        } else if (rangeArray2.length == 1) {
-            System.out.println("Объединение интервалов равно: (" +
-                    rangeArray2[0].getFrom() + ", " + rangeArray2[0].getTo() + ")");
-        } else {
-            System.out.println("Разность интервалов равно: (" + rangeArray2[0].getFrom() + ", " +
-                    rangeArray2[0].getTo() + ") и (" + rangeArray2[1].getFrom() + ", " + rangeArray2[1].getTo() + ")");
-        }
+        Range[] differenceResult = range1.getDifference(range2);
+        System.out.println("Разность интервалов: " + Range.toString(differenceResult));
     }
 }

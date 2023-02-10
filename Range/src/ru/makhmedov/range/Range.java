@@ -9,9 +9,6 @@ public class Range {
         this.to = to;
     }
 
-    public Range() {
-    }
-
     public double getFrom() {
         return from;
     }
@@ -36,41 +33,63 @@ public class Range {
         return (number >= from) && (number <= to);
     }
 
-    public Range getRangeCrossing(Range range1, Range range2) {
-        if (range1.to <= range2.from || range1.from >= range2.to) {
+    public Range getIntersection(Range range2) {
+        if (this.to <= range2.from || this.from >= range2.to) {
             return null;
         }
 
-        return new Range(Math.max(range1.from, range2.from), Math.min(range1.to, range2.to));
+        return new Range(Math.max(this.from, range2.from), Math.min(this.to, range2.to));
     }
 
-    public Range[] getRangeCombining(Range range1, Range range2) {
-        if (range1.to < range2.from || range1.from > range2.to) {
-            return new Range[]{range1, range2};
+    public Range[] getUnion(Range range2) {
+        if (this.to < range2.from || this.from > range2.to) {
+            return new Range[]{new Range(this.from, this.to), new Range(range2.from, range2.to)};
         }
 
-        Range resultRange = new Range(Math.min(range1.from, range2.from), Math.max(range1.to, range2.to));
-
-        return new Range[]{resultRange};
+        return new Range[]{new Range(Math.min(this.from, range2.from), Math.max(this.to, range2.to))};
     }
 
-    public Range[] getRangeDifference(Range range1, Range range2) {
-        if ((range1.to <= range2.from || range1.from >= range2.to) ||
-                (range1.from >= range2.from && range1.to <= range2.to)) {
-            return null;
+    public Range[] getDifference(Range range) {
+        if (this.from >= range.from && this.to <= range.to) {
+            return new Range[]{};
         }
 
-        if (range1.from < range2.from && range1.to > range2.to) {
-            Range resultRange1 = new Range(range1.from, range2.from);
-            Range resultRange2 = new Range(range2.to, range1.to);
-
-            return new Range[]{resultRange1, resultRange2};
+        if (this.to <= range.from || this.from >= range.to) {
+            return new Range[]{new Range(this.from, this.to)};
         }
 
-        if (range1.from < range2.from) {
-            return new Range[]{new Range(range1.from, range2.from)};
+        if (this.from < range.from && this.to > range.to) {
+            return new Range[]{new Range(this.from, range.from), new Range(range.to, this.to)};
         }
 
-        return new Range[]{new Range(range2.to, range1.to)};
+        if (this.from < range.from) {
+            return new Range[]{new Range(this.from, range.from)};
+        }
+
+        return new Range[]{new Range(range.to, this.to)};
+    }
+
+    @Override
+    public String toString() {
+        return "(" + this.from + ", " + this.to + ")";
+    }
+
+    public static String toString(Range[] array) {
+        int iMax = array.length - 1;
+
+        if (iMax == -1) {
+            return "Пустое множество";
+        }
+
+        StringBuilder b = new StringBuilder();
+        for (int i = 0; ; i++) {
+            b.append(array[i]);
+
+            if (i == iMax) {
+                return b.toString();
+            }
+
+            b.append(", ");
+        }
     }
 }
