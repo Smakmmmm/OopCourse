@@ -46,4 +46,46 @@ public class Triangle implements Shape {
 
         return firstSideLength + secondSideLength + thirdSideLength;
     }
+
+    @Override
+    public String toString() {
+        return "Треугольник:\n" +
+                "Вершины треугольника: " + "(" + this.x1 + ", " + this.y1 + "), (" +
+                                                this.x2 + ", " + this.y2 + "), (" +
+                                                this.x3 + ", " + this.y3 + ");\n" +
+                "Высота: " + getHeight() + ";\n" +
+                "Ширина: " + getWidth() + ";\n" +
+                "Площадь: " + getArea() + ";\n" +
+                "Периметр: " + getPerimeter() + ".\n";
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 37;
+        int hash = 1;
+
+        hash = prime * hash + Double.hashCode(x1);
+        hash = prime * hash + Double.hashCode(y1);
+        hash = prime * hash + Double.hashCode(x2);
+        hash = prime * hash + Double.hashCode(y2);
+        hash = prime * hash + Double.hashCode(x3);
+        hash = prime * hash + Double.hashCode(y3);
+
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object ob) {
+        if (ob == this) {
+            return true;
+        }
+
+        if (ob == null || ob.getClass() != getClass()) {
+            return false;
+        }
+
+        Triangle t = (Triangle) ob;
+
+        return x1 == t.x1 && x2 == t.x2 && x3 == t.x3 && y1 == t.y1 && y2 == t.y2 && y3 == t.y3;
+    }
 }

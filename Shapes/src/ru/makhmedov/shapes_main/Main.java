@@ -5,6 +5,18 @@ import ru.makhmedov.shapes.*;
 import java.util.Arrays;
 
 public class Main {
+    public static Shape getMaxFigure(Shape[] shapes) {
+        Arrays.sort(shapes, new AreaComparator());
+
+        return shapes[0];
+    }
+
+    public static Shape getSecondMaxFigure(Shape[] shapes) {
+        Arrays.sort(shapes, new AreaComparator());
+
+        return shapes[1];
+    }
+
     public static void main(String[] args) {
         Shape[] shapes = {
                 new Square(4),
@@ -17,6 +29,7 @@ public class Main {
                 new Triangle(2, 7, 4, 2, 9, 6)
         };
 
-        
+        System.out.println(getMaxFigure(shapes));
+        System.out.println(getSecondMaxFigure(shapes));
     }
 }
