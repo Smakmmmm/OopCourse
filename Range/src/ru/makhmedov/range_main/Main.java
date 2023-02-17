@@ -2,6 +2,7 @@ package ru.makhmedov.range_main;
 
 import ru.makhmedov.range.Range;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -50,9 +51,9 @@ public class Main {
         }
 
         Range[] unionResult = range1.getUnion(range2);
-        System.out.println("Объединение интервалов равно: " + Range.toString(unionResult));
+        System.out.println("Объединение интервалов равно: " + Arrays.toString(unionResult));
 
         Range[] differenceResult = range1.getDifference(range2);
-        System.out.println("Разность интервалов: " + Range.toString(differenceResult));
+        System.out.println("Разность интервалов: " + Arrays.toString(differenceResult));
     }
 }
