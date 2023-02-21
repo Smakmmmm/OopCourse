@@ -1,14 +1,6 @@
 package ru.makhmedov.shapes;
 
-public class Rectangle implements Shape {
-    private final double height;
-    private final double width;
-
-    public Rectangle(double height, double width) {
-        this.height = height;
-        this.width = width;
-    }
-
+public record Rectangle(double width, double height) implements Shape {
     @Override
     public double getWidth() {
         return width;
@@ -31,11 +23,11 @@ public class Rectangle implements Shape {
 
     @Override
     public String toString() {
-        return "Прямоугольник:\n" +
-                "Высота: " + this.height + ";\n" +
-                "Ширина: " + this.width + ";\n" +
-                "Площадь: " + getArea() + ";\n" +
-                "Периметр: " + getPerimeter() + ".\n";
+        return "Прямоугольник: " +
+                "Высота: " + this.height + "; " +
+                "Ширина: " + this.width + "; " +
+                "Площадь: " + getArea() + "; " +
+                "Периметр: " + getPerimeter() + ". ";
     }
 
     @Override
@@ -50,16 +42,16 @@ public class Rectangle implements Shape {
     }
 
     @Override
-    public boolean equals(Object ob) {
-        if (ob == this) {
+    public boolean equals(Object o) {
+        if (o == this) {
             return true;
         }
 
-        if (ob == null || ob.getClass() != getClass()) {
+        if (o == null || o.getClass() != getClass()) {
             return false;
         }
 
-        Rectangle r = (Rectangle) ob;
+        Rectangle r = (Rectangle) o;
 
         return height == r.height && width == r.width;
     }

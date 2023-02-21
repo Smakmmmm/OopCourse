@@ -1,11 +1,6 @@
 package ru.makhmedov.shapes;
 
-public class Circle implements Shape {
-    private final double radius;
-
-    public Circle(double radius) {
-        this.radius = radius;
-    }
+public record Circle(double radius) implements Shape {
 
     @Override
     public double getWidth() {
@@ -19,7 +14,7 @@ public class Circle implements Shape {
 
     @Override
     public double getArea() {
-        return Math.PI * Math.pow(radius, 2);
+        return Math.PI * radius * radius;
     }
 
     @Override
@@ -29,11 +24,11 @@ public class Circle implements Shape {
 
     @Override
     public String toString() {
-        return "Окружность:\n" +
-                "Радиус: " + this.radius + ";\n" +
-                "Диаметр (ширина и высота): " + getHeight() + ";\n" +
-                "Площадь: " + getArea() + ";\n" +
-                "Длина окружности (периметр): " + getPerimeter() + ".\n";
+        return "Окружность: " +
+                "Радиус: " + this.radius + "; " +
+                "Диаметр (ширина и высота): " + getHeight() + "; " +
+                "Площадь: " + getArea() + "; " +
+                "Длина окружности (периметр): " + getPerimeter() + ". ";
     }
 
     @Override
@@ -47,16 +42,16 @@ public class Circle implements Shape {
     }
 
     @Override
-    public boolean equals(Object ob) {
-        if (ob == this) {
+    public boolean equals(Object o) {
+        if (o == this) {
             return true;
         }
 
-        if (ob == null || ob.getClass() != getClass()) {
+        if (o == null || o.getClass() != getClass()) {
             return false;
         }
 
-        Circle c = (Circle) ob;
+        Circle c = (Circle) o;
 
         return radius == c.radius;
     }

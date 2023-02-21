@@ -1,20 +1,30 @@
 package ru.makhmedov.shapes_main;
 
+import ru.makhmedov.comparators.AreaComparator;
+import ru.makhmedov.comparators.PerimeterComparator;
 import ru.makhmedov.shapes.*;
 
 import java.util.Arrays;
 
 public class Main {
-    public static Shape getMaxFigure(Shape[] shapes) {
+    public static Shape getShapeWithMaxArea(Shape[] shapes) {
+        if (shapes.length == 0) {
+            return null;
+        }
+
         Arrays.sort(shapes, new AreaComparator());
 
-        return shapes[0];
+        return shapes[shapes.length - 1];
     }
 
-    public static Shape getSecondMaxFigure(Shape[] shapes) {
-        Arrays.sort(shapes, new AreaComparator());
+    public static Shape getShapeWithSecondLargestPerimeter(Shape[] shapes) {
+        if (shapes.length == 0) {
+            return null;
+        }
 
-        return shapes[1];
+        Arrays.sort(shapes, new PerimeterComparator());
+
+        return shapes[shapes.length - 2];
     }
 
     public static void main(String[] args) {
@@ -29,7 +39,10 @@ public class Main {
                 new Triangle(2, 7, 4, 2, 9, 6)
         };
 
-        System.out.println(getMaxFigure(shapes));
-        System.out.println(getSecondMaxFigure(shapes));
+        System.out.println(getShapeWithMaxArea(shapes));
+        System.out.println(getShapeWithSecondLargestPerimeter(shapes));
+
+        Shape[] shapes1 = {};
+        System.out.println(getShapeWithMaxArea(shapes1));
     }
 }

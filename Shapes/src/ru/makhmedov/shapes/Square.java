@@ -1,11 +1,6 @@
 package ru.makhmedov.shapes;
 
-public class Square implements Shape {
-    private final double sideLength;
-
-    public Square(double sideLength) {
-        this.sideLength = sideLength;
-    }
+public record Square(double sideLength) implements Shape {
 
     @Override
     public double getWidth() {
@@ -19,7 +14,7 @@ public class Square implements Shape {
 
     @Override
     public double getArea() {
-        return Math.pow(sideLength, 2);
+        return sideLength * sideLength;
     }
 
     @Override
@@ -29,10 +24,10 @@ public class Square implements Shape {
 
     @Override
     public String toString() {
-        return "Квадрат:\n" +
-                "Длина стороны: " + this.sideLength + ";\n" +
-                "Площадь: " + getArea() + ";\n" +
-                "Периметр: " + getPerimeter() + ".\n";
+        return "Квадрат: " +
+                "Длина стороны: " + this.sideLength + "; " +
+                "Площадь: " + getArea() + "; " +
+                "Периметр: " + getPerimeter() + ". ";
     }
 
     @Override
@@ -46,16 +41,16 @@ public class Square implements Shape {
     }
 
     @Override
-    public boolean equals(Object ob) {
-        if (ob == this) {
+    public boolean equals(Object o) {
+        if (o == this) {
             return true;
         }
 
-        if (ob == null || ob.getClass() != getClass()) {
+        if (o == null || o.getClass() != getClass()) {
             return false;
         }
 
-        Square s = (Square) ob;
+        Square s = (Square) o;
 
         return sideLength == s.sideLength;
     }
