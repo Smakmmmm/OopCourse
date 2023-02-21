@@ -18,13 +18,13 @@ public record Triangle(double x1, double y1, double x2, double y2, double x3, do
 
     @Override
     public double getArea() {
-        double firstSideLength = getSideLength(x1, x2, y1, y2);
-        double secondSideLength = getSideLength(x2, x3, y2, y3);
-        double thirdSideLength = getSideLength(x1, x3, y1, y3);
+        double Side1Length = getSideLength(x1, x2, y1, y2);
+        double Side2Length = getSideLength(x2, x3, y2, y3);
+        double Side3Length = getSideLength(x1, x3, y1, y3);
 
-        double semiPerimeter = (firstSideLength + secondSideLength + thirdSideLength) / 2;
-        return Math.sqrt(semiPerimeter * (semiPerimeter - firstSideLength) *
-                (semiPerimeter - secondSideLength) * (semiPerimeter - thirdSideLength));
+        double semiPerimeter = (Side1Length + Side2Length + Side3Length) / 2;
+        return Math.sqrt(semiPerimeter * (semiPerimeter - Side1Length) *
+                (semiPerimeter - Side2Length) * (semiPerimeter - Side3Length));
     }
 
     @Override
