@@ -1,7 +1,6 @@
 package ru.makhmedov.shapes;
 
 public record Square(double sideLength) implements Shape {
-
     @Override
     public double getWidth() {
         return sideLength;
@@ -25,9 +24,9 @@ public record Square(double sideLength) implements Shape {
     @Override
     public String toString() {
         return "Квадрат: " +
-                "Длина стороны: " + this.sideLength + "; " +
+                "Длина стороны: " + sideLength + "; " +
                 "Площадь: " + getArea() + "; " +
-                "Периметр: " + getPerimeter() + ". ";
+                "Периметр: " + getPerimeter() + ".";
     }
 
     @Override

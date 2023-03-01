@@ -22,6 +22,10 @@ public class Main {
             return null;
         }
 
+        if (shapes.length == 1) {
+            return shapes[0];
+        }
+
         Arrays.sort(shapes, new PerimeterComparator());
 
         return shapes[shapes.length - 2];

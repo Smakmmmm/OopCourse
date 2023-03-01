@@ -1,7 +1,6 @@
 package ru.makhmedov.shapes;
 
 public record Circle(double radius) implements Shape {
-
     @Override
     public double getWidth() {
         return 2 * radius;
@@ -25,10 +24,10 @@ public record Circle(double radius) implements Shape {
     @Override
     public String toString() {
         return "Окружность: " +
-                "Радиус: " + this.radius + "; " +
+                "Радиус: " + radius + "; " +
                 "Диаметр (ширина и высота): " + getHeight() + "; " +
                 "Площадь: " + getArea() + "; " +
-                "Длина окружности (периметр): " + getPerimeter() + ". ";
+                "Длина окружности (периметр): " + getPerimeter() + ".";
     }
 
     @Override

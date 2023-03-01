@@ -18,16 +18,16 @@ public record Rectangle(double width, double height) implements Shape {
 
     @Override
     public double getPerimeter() {
-        return 2 * height + 2 * width;
+        return 2 * (height + width);
     }
 
     @Override
     public String toString() {
         return "Прямоугольник: " +
-                "Высота: " + this.height + "; " +
-                "Ширина: " + this.width + "; " +
+                "Высота: " + height + "; " +
+                "Ширина: " + width + "; " +
                 "Площадь: " + getArea() + "; " +
-                "Периметр: " + getPerimeter() + ". ";
+                "Периметр: " + getPerimeter() + ".";
     }
 
     @Override

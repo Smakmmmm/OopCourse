@@ -1,7 +1,6 @@
 package ru.makhmedov.shapes;
 
 public record Triangle(double x1, double y1, double x2, double y2, double x3, double y3) implements Shape {
-
     @Override
     public double getWidth() {
         return Math.max(x1, Math.max(x2, x3)) - Math.min(x1, Math.min(x2, x3));
@@ -12,36 +11,36 @@ public record Triangle(double x1, double y1, double x2, double y2, double x3, do
         return Math.max(y1, Math.max(y2, y3)) - Math.min(y1, Math.min(y2, y3));
     }
 
-    public double getSideLength(double x1, double x2, double y1, double y2) {
+    private static double getSideLength(double x1, double y1, double x2, double y2) {
         return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
     }
 
     @Override
     public double getArea() {
-        double Side1Length = getSideLength(x1, x2, y1, y2);
-        double Side2Length = getSideLength(x2, x3, y2, y3);
-        double Side3Length = getSideLength(x1, x3, y1, y3);
+        double side1Length = getSideLength(x1, y1, x2, y2);
+        double side2Length = getSideLength(x2, y2, x3, y3);
+        double side3Length = getSideLength(x1, y1, x3, y3);
 
-        double semiPerimeter = (Side1Length + Side2Length + Side3Length) / 2;
-        return Math.sqrt(semiPerimeter * (semiPerimeter - Side1Length) *
-                (semiPerimeter - Side2Length) * (semiPerimeter - Side3Length));
+        double semiPerimeter = (side1Length + side2Length + side3Length) / 2;
+        return Math.sqrt(semiPerimeter * (semiPerimeter - side1Length) *
+                (semiPerimeter - side2Length) * (semiPerimeter - side3Length));
     }
 
     @Override
     public double getPerimeter() {
-        return getSideLength(x1, x2, y1, y2) + getSideLength(x2, x3, y2, y3) + getSideLength(x1, x3, y1, y3);
+        return getSideLength(x1, y1, x2, y2) + getSideLength(x2, y2, x3, y3) + getSideLength(x1, y1, x3, y3);
     }
 
     @Override
     public String toString() {
         return "Треугольник: " +
-                "Вершины треугольника: " + "(" + this.x1 + ", " + this.y1 + "), (" +
-                this.x2 + ", " + this.y2 + "), (" +
-                this.x3 + ", " + this.y3 + "); " +
+                "Вершины треугольника: " + "(" + x1 + ", " + y1 + "), (" +
+                x2 + ", " + y2 + "), (" +
+                x3 + ", " + y3 + "); " +
                 "Высота: " + getHeight() + "; " +
                 "Ширина: " + getWidth() + "; " +
                 "Площадь: " + getArea() + "; " +
-                "Периметр: " + getPerimeter() + ". ";
+                "Периметр: " + getPerimeter() + ".";
     }
 
     @Override
