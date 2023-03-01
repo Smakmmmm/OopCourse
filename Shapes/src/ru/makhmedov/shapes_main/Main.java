@@ -1,7 +1,7 @@
 package ru.makhmedov.shapes_main;
 
-import ru.makhmedov.comparators.AreaComparator;
-import ru.makhmedov.comparators.PerimeterComparator;
+import ru.makhmedov.shapes_comparators.AreaComparator;
+import ru.makhmedov.shapes_comparators.PerimeterComparator;
 import ru.makhmedov.shapes.*;
 
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package ru.makhmedov.comparators;
+package ru.makhmedov.shapes_comparators;
 
 import ru.makhmedov.shapes.Shape;
 
