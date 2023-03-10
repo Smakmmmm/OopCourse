@@ -1,7 +1,7 @@
 package ru.makhmedov.shapes_main;
 
-import ru.makhmedov.shapes_comparators.AreaComparator;
-import ru.makhmedov.shapes_comparators.PerimeterComparator;
+import ru.makhmedov.shapes_comparators.ShapeAreaComparator;
+import ru.makhmedov.shapes_comparators.ShapePerimeterComparator;
 import ru.makhmedov.shapes.*;
 
 import java.util.Arrays;
@@ -12,21 +12,17 @@ public class Main {
             return null;
         }
 
-        Arrays.sort(shapes, new AreaComparator());
+        Arrays.sort(shapes, new ShapeAreaComparator());
 
         return shapes[shapes.length - 1];
     }
 
     public static Shape getShapeWithSecondLargestPerimeter(Shape[] shapes) {
-        if (shapes.length == 0) {
+        if (shapes.length == 0 || shapes.length == 1) {
             return null;
         }
 
-        if (shapes.length == 1) {
-            return shapes[0];
-        }
-
-        Arrays.sort(shapes, new PerimeterComparator());
+        Arrays.sort(shapes, new ShapePerimeterComparator());
 
         return shapes[shapes.length - 2];
     }
