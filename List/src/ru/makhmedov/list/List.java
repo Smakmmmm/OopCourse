@@ -1,5 +1,7 @@
 package ru.makhmedov.list;
 
+import java.util.NoSuchElementException;
+
 public class List<T> {
     private int count;
     private Node<T> head;
@@ -8,90 +10,98 @@ public class List<T> {
         return count;
     }
 
-    public T getFirstElement() {
+    public T getFirst() {
         if (head == null) {
-            throw new NullPointerException("Список пуст.");
+            throw new NoSuchElementException("Список пуст.");
         }
 
         return head.getData();
     }
 
-    public Node<T> getElementByIndex(int index) {
-        if (index < 0 || index > count - 1) {
-            throw new IndexOutOfBoundsException("Индекс за пределами размера списка.");
+    private void checkIndex(int index) {
+        if (index < 0 || index >= count) {
+            throw new IndexOutOfBoundsException("Индекс за пределами размера списка. Сейчас индекс: " + index + ". Границы: (0, " + --count + ")");
         }
+    }
 
-        Node<T> p = head;
+    private Node<T> getNodeByIndex(int index) {
+        Node<T> node = head;
 
         for (int i = 0; i != index; i++) {
-            p = p.getNext();
+            node = node.getNext();
         }
 
-        return p;
+        return node;
     }
 
-    public T getElementDateByIndex(int index) {
-        return getElementByIndex(index).getData();
+    public T getByIndex(int index) {
+        if (count == 0) {
+            throw new NoSuchElementException("Список пуст.");
+        }
+
+        checkIndex(index);
+
+        return getNodeByIndex(index).getData();
     }
 
-    public T changeElementDateByIndex(int index, T newDate) {
-        T currentDate = getElementByIndex(index).getData();
-        getElementByIndex(index).setData(newDate);
+    public T setByIndex(int index, T data) {
+        checkIndex(index);
 
-        return currentDate;
+        Node<T> node = getNodeByIndex(index);
+
+        T oldData = node.getData();
+        node.setData(data);
+
+        return oldData;
     }
 
     public T removeByIndex(int index) {
+        checkIndex(index);
+
         if (index == 0) {
-            return removeFirstElement();
+            return removeFirst();
         }
 
-        Node<T> elementBeforeRemoved = getElementByIndex(index - 1);
-        T remoteDate = elementBeforeRemoved.getNext().getData();
+        Node<T> previousNode = getNodeByIndex(index - 1);
+        T removedData = previousNode.getNext().getData();
 
-        elementBeforeRemoved.setNext(elementBeforeRemoved.getNext().getNext());
+        previousNode.setNext(previousNode.getNext().getNext());
 
         count--;
 
-        return remoteDate;
+        return removedData;
     }
 
-    public void addFront(T data) {
-        Node<T> newElement = new Node<>(data);
-
-        if (head != null) {
-            newElement.setNext(head);
-        }
-
-        head = newElement;
+    public void addFirst(T data) {
+        head = new Node<>(data, head);
         count++;
     }
 
     public void addByIndex(int index, T data) {
         if (index == 0) {
-            addFront(data);
+            addFirst(data);
         } else {
-            Node<T> elementBeforeAdded = getElementByIndex(index - 1);
-            Node<T> newElement = new Node<>(data, elementBeforeAdded.getNext());
+            checkIndex(index);
 
-            elementBeforeAdded.setNext(newElement);
+            Node<T> previousNode = getNodeByIndex(index - 1);
+
+            previousNode.setNext(new Node<>(data, previousNode.getNext()));
         }
     }
 
-    public boolean removeByDate(T date) {
+    public boolean removeByData(T data) {
         if (head == null) {
             return false;
         }
 
-        if (date == head.getData()) {
-            removeFirstElement();
-            count--;
+        if (data.equals(head.getData())) {
+            removeFirst();
             return true;
         }
 
-        for (Node<T> p = head.getNext(), prev = head; p != null; prev = p, p = p.getNext()) {
-            if (date == p.getData()) {
-                prev.setNext(p.getNext());
+        for (Node<T> current = head.getNext(), previous = head; current != null; previous = current, current = current.getNext()) {
+            if (data.equals(current.getData())) {
+                previous.setNext(current.getNext());
                 count--;
                 return true;
             }
@@ -100,47 +110,51 @@ public class List<T> {
         return false;
     }
 
-    public T removeFirstElement() {
-        T remoteDate = head.getData();
+    public T removeFirst() {
+        if (count == 0) {
+            throw new NoSuchElementException("Список пуст.");
+        }
+
+        T removedData = head.getData();
 
         head = head.getNext();
         count--;
 
-        return remoteDate;
+        return removedData;
     }
 
     public void revert() {
-        Node<T> p = head;
-        Node<T> prev = null;
+        Node<T> current = head;
+        Node<T> previous = null;
 
-        while (p != null) {
-            Node<T> temp = p.getNext();
+        while (current != null) {
+            Node<T> temporaryNode = current.getNext();
 
-            p.setNext(prev);
-            prev = p;
-            head = p;
+            current.setNext(previous);
+            previous = current;
+            head = current;
 
-            p = temp;
+            current = temporaryNode;
         }
     }
 
     public List<T> copy() {
+        if (head == null) {
+            throw new NoSuchElementException("Копируемые массив пуст.");
+        }
+
         List<T> copy = new List<>();
-        Node<T> newElement = new Node<>();
+        Node<T> newNode = new Node<>(head.getData());
 
-        copy.head = newElement;
-        copy.count = 1;
+        copy.head = newNode;
+        copy.count = count;
 
-        newElement.setData(head.getData());
-        Node<T> lastElement = newElement;
+        Node<T> lastNode = newNode;
 
-        for (Node<T> p = head.getNext(); p != null; p = p.getNext()) {
-            newElement = new Node<>();
-            newElement.setData(p.getData());
-            lastElement.setNext(newElement);
-            lastElement = newElement;
-
-            copy.count++;
+        for (Node<T> current = head.getNext(); current != null; current = current.getNext()) {
+            newNode = new Node<>(current.getData());
+            lastNode.setNext(newNode);
+            lastNode = newNode;
         }
 
         return copy;
@@ -148,17 +162,20 @@ public class List<T> {
 
     @Override
     public String toString() {
-        StringBuilder stringList = new StringBuilder();
-        stringList.append("[");
-
-        for (Node<T> p = head; ; p = p.getNext()) {
-            stringList.append(p.getData());
-
-            if (p.getNext() == null) {
-                return stringList.append("]").toString();
-            }
-
-            stringList.append(", ");
+        if (head == null) {
+            throw new NoSuchElementException("Список пуст.");
         }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[");
+
+        for (Node<T> current = head; current != null; current = current.getNext()) {
+            stringBuilder.append(current.getData());
+            stringBuilder.append(", ");
+        }
+
+        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+
+        return stringBuilder.append("]").toString();
     }
 }

@@ -1,10 +1,8 @@
 package ru.makhmedov.list;
 
-public class Node<T> {
+class Node<T> {
     private T data;
     private Node<T> next;
-
-    public Node() {}
 
     public Node(T data) {
         this.data = data;

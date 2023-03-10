@@ -7,14 +7,14 @@ public class Main {
         List<Integer> myList = new List<>();
 
         for (int i = 0; i <= 5; i++) {
-            myList.addFront(i);
+            myList.addFirst(i);
         }
 
         System.out.println("Список: " + myList);
-        System.out.println("Длина списка" + myList.getCount());
-        System.out.println("Первый элемент списка: " + myList.getFirstElement());
+        System.out.println("Длина списка: " + myList.getCount());
+        System.out.println("Первый элемент списка: " + myList.getFirst());
 
-        System.out.println("Элемент под индексом 4: " + myList.getElementDateByIndex(4));
+        System.out.println("Элемент под индексом 4: " + myList.getByIndex(4));
 
         myList.revert();
 
@@ -25,7 +25,7 @@ public class Main {
 
         System.out.println("Копия списка: " + myListCopy);
 
-        if (myList.removeByDate(3)) {
+        if (myList.removeByData(3)) {
             System.out.println("Удаление элемента: " + myList);
         }
 
@@ -35,7 +35,7 @@ public class Main {
         System.out.println("Длина копии = " + myListCopy.getCount());
         System.out.println("Длина списка = " + myList.getCount());
 
-        System.out.println("Старое значение элемента под индексом 0: " + myListCopy.changeElementDateByIndex(0, 55));
+        System.out.println("Старое значение элемента под индексом 0: " + myListCopy.setByIndex(0, 55));
         System.out.println("Копия списка после изменения значения элемента: " + myListCopy);
 
         System.out.println("Значение удаленного элемента: " + myListCopy.removeByIndex(0));
