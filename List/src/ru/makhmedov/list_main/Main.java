@@ -4,44 +4,44 @@ import ru.makhmedov.list.List;
 
 public class Main {
     public static void main(String[] args) {
-        List<Integer> myList = new List<>();
+        List<Integer> list = new List<>();
 
         for (int i = 0; i <= 5; i++) {
-            myList.addFirst(i);
+            list.addFirst(i);
         }
 
-        System.out.println("Список: " + myList);
-        System.out.println("Длина списка: " + myList.getCount());
-        System.out.println("Первый элемент списка: " + myList.getFirst());
+        System.out.println("Список: " + list);
+        System.out.println("Длина списка: " + list.getCount());
+        System.out.println("Первый элемент списка: " + list.getFirst());
 
-        System.out.println("Элемент под индексом 4: " + myList.getByIndex(4));
+        System.out.println("Элемент под индексом 4: " + list.getByIndex(4));
 
-        myList.revert();
+        list.revert();
 
         System.out.println();
-        System.out.println("Список после реверса: " + myList);
+        System.out.println("Список после реверса: " + list);
 
-        List<Integer> myListCopy = myList.copy();
+        List<Integer> listCopy = list.copy();
 
-        System.out.println("Копия списка: " + myListCopy);
+        System.out.println("Копия списка: " + listCopy);
 
-        if (myList.removeByData(3)) {
-            System.out.println("Удаление элемента: " + myList);
+        if (list.removeByData(null)) {
+            System.out.println("Удаление элемента: " + list);
         }
 
-        System.out.println("Оригинальный список: " + myList);
-        System.out.println("Копия списка: " + myListCopy);
+        System.out.println("Оригинальный список: " + list);
+        System.out.println("Копия списка: " + listCopy);
 
-        System.out.println("Длина копии = " + myListCopy.getCount());
-        System.out.println("Длина списка = " + myList.getCount());
+        System.out.println("Длина копии = " + listCopy.getCount());
+        System.out.println("Длина списка = " + list.getCount());
 
-        System.out.println("Старое значение элемента под индексом 0: " + myListCopy.setByIndex(0, 55));
-        System.out.println("Копия списка после изменения значения элемента: " + myListCopy);
+        System.out.println("Старое значение элемента под индексом 0: " + listCopy.setByIndex(0, 55));
+        System.out.println("Копия списка после изменения значения элемента: " + listCopy);
 
-        System.out.println("Значение удаленного элемента: " + myListCopy.removeByIndex(0));
-        System.out.println("Копия списка теперь: " + myListCopy);
+        System.out.println("Значение удаленного элемента: " + listCopy.removeByIndex(0));
+        System.out.println("Копия списка теперь: " + listCopy);
 
-        myListCopy.addByIndex(4, 23);
-        System.out.println("Копия после добавления в нее элемента по индексу 4: " + myListCopy);
+        listCopy.addByIndex(4, 23);
+        System.out.println("Копия после добавления в нее элемента по индексу 4: " + listCopy);
     }
 }

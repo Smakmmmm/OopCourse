@@ -1,6 +1,7 @@
 package ru.makhmedov.list;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class List<T> {
     private int count;
@@ -20,14 +21,14 @@ public class List<T> {
 
     private void checkIndex(int index) {
         if (index < 0 || index >= count) {
-            throw new IndexOutOfBoundsException("Индекс за пределами размера списка. Сейчас индекс: " + index + ". Границы: (0, " + --count + ")");
+            throw new IndexOutOfBoundsException("Индекс за пределами размера списка. Сейчас индекс: " + index + ". Границы: (0, " + (count - 1) + ")");
         }
     }
 
     private Node<T> getNodeByIndex(int index) {
         Node<T> node = head;
 
-        for (int i = 0; i != index; i++) {
+        for (int i = 0; i < index; i++) {
             node = node.getNext();
         }
 
@@ -35,10 +36,6 @@ public class List<T> {
     }
 
     public T getByIndex(int index) {
-        if (count == 0) {
-            throw new NoSuchElementException("Список пуст.");
-        }
-
         checkIndex(index);
 
         return getNodeByIndex(index).getData();
@@ -80,12 +77,15 @@ public class List<T> {
     public void addByIndex(int index, T data) {
         if (index == 0) {
             addFirst(data);
-        } else {
-            checkIndex(index);
+            return;
+        }
 
+        if (index > 0 && index <= count) {
             Node<T> previousNode = getNodeByIndex(index - 1);
 
             previousNode.setNext(new Node<>(data, previousNode.getNext()));
+        } else {
+            throw new IndexOutOfBoundsException("Индекс за пределами размера списка. Сейчас индекс: " + index + ". Границы: (0, " + (count - 1) + ")");
         }
     }
 
@@ -94,14 +94,14 @@ public class List<T> {
             return false;
         }
 
-        if (data.equals(head.getData())) {
+        if (Objects.equals(data, head.getData())) {
             removeFirst();
             return true;
         }
 
-        for (Node<T> current = head.getNext(), previous = head; current != null; previous = current, current = current.getNext()) {
-            if (data.equals(current.getData())) {
-                previous.setNext(current.getNext());
+        for (Node<T> currentNode = head.getNext(), previousNode = head; currentNode != null; previousNode = currentNode, currentNode = currentNode.getNext()) {
+            if (Objects.equals(data, currentNode.getData())) {
+                previousNode.setNext(currentNode.getNext());
                 count--;
                 return true;
             }
@@ -124,37 +124,35 @@ public class List<T> {
     }
 
     public void revert() {
-        Node<T> current = head;
-        Node<T> previous = null;
+        Node<T> currentNode = head;
+        Node<T> previousNode = null;
 
-        while (current != null) {
-            Node<T> temporaryNode = current.getNext();
+        while (currentNode != null) {
+            Node<T> nextNode = currentNode.getNext();
 
-            current.setNext(previous);
-            previous = current;
-            head = current;
+            currentNode.setNext(previousNode);
+            previousNode = currentNode;
+            head = currentNode;
 
-            current = temporaryNode;
+            currentNode = nextNode;
         }
     }
 
     public List<T> copy() {
         if (head == null) {
-            throw new NoSuchElementException("Копируемые массив пуст.");
+            return new List<>();
         }
 
         List<T> copy = new List<>();
-        Node<T> newNode = new Node<>(head.getData());
 
-        copy.head = newNode;
+        copy.head = new Node<>(head.getData());
         copy.count = count;
 
-        Node<T> lastNode = newNode;
+        Node<T> lastCopyNode = copy.head;
 
-        for (Node<T> current = head.getNext(); current != null; current = current.getNext()) {
-            newNode = new Node<>(current.getData());
-            lastNode.setNext(newNode);
-            lastNode = newNode;
+        for (Node<T> currentNode = head.getNext(); currentNode != null; currentNode = currentNode.getNext()) {
+            lastCopyNode.setNext(new Node<>(currentNode.getData()));
+            lastCopyNode = lastCopyNode.getNext();
         }
 
         return copy;
@@ -163,19 +161,19 @@ public class List<T> {
     @Override
     public String toString() {
         if (head == null) {
-            throw new NoSuchElementException("Список пуст.");
+            return "[]";
         }
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("[");
+        stringBuilder.append('[');
 
-        for (Node<T> current = head; current != null; current = current.getNext()) {
-            stringBuilder.append(current.getData());
+        for (Node<T> currentNode = head; currentNode != null; currentNode = currentNode.getNext()) {
+            stringBuilder.append(currentNode.getData());
             stringBuilder.append(", ");
         }
 
         stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
 
-        return stringBuilder.append("]").toString();
+        return stringBuilder.append(']').toString();
     }
 }
