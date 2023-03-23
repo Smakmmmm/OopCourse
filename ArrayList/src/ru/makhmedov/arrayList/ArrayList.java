@@ -313,7 +313,7 @@ public class ArrayList<T> implements List<T> {
 
     private void checkIndex(int index) {
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Индекс за границами диапазона: (0, " + --size + ")" + "Индекс: " + index);
+            throw new IndexOutOfBoundsException("Индекс за границами диапазона: (0, " + (size - 1) + ")" + "Индекс: " + index);
         }
     }
 
