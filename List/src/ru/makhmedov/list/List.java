@@ -75,18 +75,18 @@ public class List<T> {
     }
 
     public void addByIndex(int index, T data) {
+        if (index < 0 || index > count) {
+            throw new IndexOutOfBoundsException("Индекс за пределами размера списка. Сейчас индекс: " + index + ". Границы: (0, " + (count - 1) + ")");
+        }
+
         if (index == 0) {
             addFirst(data);
             return;
         }
 
-        if (index > 0 && index <= count) {
-            Node<T> previousNode = getNodeByIndex(index - 1);
+        Node<T> previousNode = getNodeByIndex(index - 1);
 
-            previousNode.setNext(new Node<>(data, previousNode.getNext()));
-        } else {
-            throw new IndexOutOfBoundsException("Индекс за пределами размера списка. Сейчас индекс: " + index + ". Границы: (0, " + (count - 1) + ")");
-        }
+        previousNode.setNext(new Node<>(data, previousNode.getNext()));
     }
 
     public boolean removeByData(T data) {
@@ -168,8 +168,7 @@ public class List<T> {
         stringBuilder.append('[');
 
         for (Node<T> currentNode = head; currentNode != null; currentNode = currentNode.getNext()) {
-            stringBuilder.append(currentNode.getData());
-            stringBuilder.append(", ");
+            stringBuilder.append(currentNode.getData()).append(", ");
         }
 
         stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
