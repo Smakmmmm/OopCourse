@@ -1,0 +1,385 @@
+package ru.makhmedov.array_list;
+
+import java.util.*;
+
+public class ArrayList<E> implements List<E> {
+    private static final int DEFAULT_CAPACITY = 10;
+
+    private E[] items;
+    private int size;
+    private int modCount;
+
+    public ArrayList() {
+        //noinspection unchecked
+        items = (E[]) new Object[DEFAULT_CAPACITY];
+    }
+
+    public ArrayList(int capacity) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Вместимость не может быть меньше нуля: " + capacity);
+        }
+
+        //noinspection unchecked
+        items = (E[]) new Object[capacity];
+    }
+
+    public void trimToSize() {
+        if (size < items.length) {
+            items = Arrays.copyOf(items, size);
+        }
+    }
+
+    public void ensureCapacity(int minCapacity) {
+        if (minCapacity > items.length) {
+            items = Arrays.copyOf(items, minCapacity);
+        }
+    }
+
+    @Override
+    public int size() {
+        return size;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        return indexOf(o) != -1;
+    }
+
+    @Override
+    public java.util.Iterator<E> iterator() {
+        return new Iterator();
+    }
+
+    private class Iterator implements java.util.Iterator<E> {
+        private int currentIndex = -1;
+        private final int expectedModCount = modCount;
+
+        @Override
+        public boolean hasNext() {
+            return currentIndex + 1 < size;
+        }
+
+        @Override
+        public E next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("Список закончился.");
+            }
+
+            if (expectedModCount != modCount) {
+                throw new ConcurrentModificationException("Список был изменен.");
+            }
+
+            ++currentIndex;
+
+            return items[currentIndex];
+        }
+    }
+
+    @Override
+    public Object[] toArray() {
+        return Arrays.copyOf(items, size);
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        if (a.length < size) {
+            //noinspection unchecked
+            return (T[]) Arrays.copyOf(items, size, a.getClass());
+        }
+
+        //noinspection SuspiciousSystemArraycopy
+        System.arraycopy(items, 0, a, 0, size);
+
+        if (a.length > size) {
+            a[size] = null;
+        }
+
+        return a;
+    }
+
+    private void increaseCapacity() {
+        if (items.length == 0) {
+            items = Arrays.copyOf(items, DEFAULT_CAPACITY);
+        }
+
+        items = Arrays.copyOf(items, items.length * 2);
+    }
+
+    @Override
+    public boolean add(E item) {
+        modCount++;
+
+        add(size, item);
+
+        return true;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        int searchItemIndex = indexOf(o);
+
+        if (searchItemIndex == -1) {
+            return false;
+        }
+
+        remove(searchItemIndex);
+
+        return true;
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        for (Object e : c) {
+            if (!contains(e)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends E> c) {
+        return addAll(size, c);
+    }
+
+    @Override
+    public boolean addAll(int index, Collection<? extends E> c) {
+        int collectionSize = c.size();
+
+        if (collectionSize == 0) {
+            return false;
+        }
+
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Индекс за границами диапазона: (0, " + size + "). Индекс: " + index);
+        }
+
+        ensureCapacity(size + collectionSize);
+
+        for (E item: c) {
+            add(index, item);
+            index++;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        int j = 0;
+        boolean containsCheck = true;
+
+        for (int i = 0; i < size; i++) {
+            if (c.contains(items[i]) && containsCheck) {
+                j = i;
+                containsCheck = false;
+
+                continue;
+            }
+
+            if (!containsCheck && !c.contains(items[i])) {
+                items[j] = items[i];
+                j++;
+            }
+        }
+
+        if (containsCheck) {
+            return false;
+        }
+
+        Arrays.fill(items, j, size, null);
+
+        modCount++;
+        size = j;
+
+        return true;
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        int j = 0;
+        boolean containsCheck = true;
+
+        for (int i = 0; i < size; i++) {
+            if (!c.contains(items[i]) && containsCheck) {
+                j = i;
+                containsCheck = false;
+
+                continue;
+            }
+
+            if (!containsCheck && c.contains(items[i])) {
+                items[j] = items[i];
+                j++;
+            }
+        }
+
+        if (containsCheck) {
+            return false;
+        }
+
+        Arrays.fill(items, j, size, null);
+
+        modCount++;
+        size = j;
+
+        return true;
+    }
+
+    @Override
+    public void clear() {
+        if (size == 0) {
+            return;
+        }
+
+        Arrays.fill(items, null);
+
+        modCount++;
+        size = 0;
+    }
+
+    @Override
+    public E get(int index) {
+        checkIndex(index);
+
+        return items[index];
+    }
+
+    @Override
+    public E set(int index, E item) {
+        checkIndex(index);
+
+        E oldItem = items[index];
+        items[index] = item;
+
+        return oldItem;
+    }
+
+    @Override
+    public void add(int index, E item) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Индекс за границами диапазона: (0, " + size + "). Индекс: " + index);
+        }
+
+        if (size == items.length) {
+            increaseCapacity();
+        }
+
+        System.arraycopy(items, index, items, index + 1, size - index);
+        items[index] = item;
+        modCount++;
+        size++;
+    }
+
+    private void checkIndex(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Индекс за границами диапазона: (0, " + (size - 1) + "). Индекс: " + index);
+        }
+    }
+
+    @Override
+    public E remove(int index) {
+        checkIndex(index);
+
+        E removedItem = items[index];
+
+        if (index < size - 1) {
+            System.arraycopy(items, index + 1, items, index, size - index - 1);
+        }
+
+        items[size - 1] = null;
+        modCount++;
+        size--;
+
+        return removedItem;
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        for (int i = 0; i < size; i++) {
+            if (Objects.equals(o, items[i])) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    @Override
+    public int lastIndexOf(Object o) {
+        for (int i = size - 1; i >= 0; i--) {
+            if (Objects.equals(o, items[i])) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (o == null || o.getClass() != getClass()) {
+            return false;
+        }
+
+        //noinspection unchecked
+        ArrayList<E> a = (ArrayList<E>) o;
+
+        if (size != a.size) {
+            return false;
+        }
+
+        for (int i = 0; i < size; i++) {
+            if (items[i] != a.items[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        if (size == 0) {
+            return "[]";
+        }
+
+        return Arrays.toString(items) + ". Размер: " + size;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 37;
+        int hash = 1;
+
+        hash = prime * hash + Arrays.hashCode(items);
+        hash = prime * hash + size;
+
+        return hash;
+    }
+
+    @Override
+    public ListIterator<E> listIterator() {
+        return null;
+    }
+
+    @Override
+    public ListIterator<E> listIterator(int index) {
+        return null;
+    }
+
+    @Override
+    public List<E> subList(int fromIndex, int toIndex) {
+        return null;
+    }
+}
