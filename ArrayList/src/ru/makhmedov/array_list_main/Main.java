@@ -8,6 +8,7 @@ public class Main {
     public static void main(String[] args) {
         ArrayList<Integer> numbers = new ArrayList<>();
         numbers.addAll(Arrays.asList(2, 7, 11, 2, 5, 5));
+        numbers.addAll(3, Arrays.asList(0,0,0));
         System.out.println("Числа: " + numbers);
 
         ArrayList<Integer> additionalNumbers = new ArrayList<>(2);
