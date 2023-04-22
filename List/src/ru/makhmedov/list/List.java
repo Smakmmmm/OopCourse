@@ -76,7 +76,7 @@ public class List<T> {
 
     public void addByIndex(int index, T data) {
         if (index < 0 || index > count) {
-            throw new IndexOutOfBoundsException("Индекс за пределами размера списка. Сейчас индекс: " + index + ". Границы: (0, " + (count - 1) + ")");
+            throw new IndexOutOfBoundsException("Недопустимый индекс. Сейчас индекс: " + index + ". Границы: (0, " + (count - 1) + ")");
         }
 
         if (index == 0) {
@@ -87,6 +87,7 @@ public class List<T> {
         Node<T> previousNode = getNodeByIndex(index - 1);
 
         previousNode.setNext(new Node<>(data, previousNode.getNext()));
+        count++;
     }
 
     public boolean removeByData(T data) {
