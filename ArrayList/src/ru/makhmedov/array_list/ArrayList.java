@@ -55,7 +55,7 @@ public class ArrayList<E> implements List<E> {
         return new ArrayListIterator();
     }
 
-    private class ArrayListIterator implements java.util.Iterator<E> {
+    private class ArrayListIterator implements Iterator<E> {
         private int currentIndex = -1;
         private final int expectedModCount = modCount;
 
@@ -350,11 +350,16 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public String toString() {
-        if (size == 0) {
-            return "[]";
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append('[');
+
+        for (int i = 0; i < size; i++) {
+            stringBuilder.append(items[i]).append(", ");
         }
 
-        return Arrays.toString(items);
+        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length()).append(']');
+
+        return stringBuilder.toString();
     }
 
     @Override
@@ -362,21 +367,30 @@ public class ArrayList<E> implements List<E> {
         final int prime = 37;
         int hash = 1;
 
-        hash = prime * hash + Arrays.hashCode(items);
+        for (E item : items) {
+            if (item == null) {
+                hash = prime * hash;
+            } else {
+                hash = prime * hash + item.hashCode();
+            }
+        }
 
         return hash;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public ListIterator<E> listIterator() {
         return null;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public ListIterator<E> listIterator(int index) {
         return null;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
         return null;
