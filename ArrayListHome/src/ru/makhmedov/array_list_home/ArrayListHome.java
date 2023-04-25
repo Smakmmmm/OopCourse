@@ -11,16 +11,16 @@ public class ArrayListHome {
     public static void main(String[] args) {
         System.out.println("Задача 1");
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("ArrayListHome\\src\\ru\\makhmedov\\array_list_home\\lines.txt"))) {
-            ArrayList<String> fileLine = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("ArrayListHome/src/ru/makhmedov/array_list_home/lines.txt"))) {
+            ArrayList<String> fileLines = new ArrayList<>();
 
-            String string;
+            String line;
 
-            while ((string = reader.readLine()) != null) {
-                fileLine.add(string);
+            while ((line = reader.readLine()) != null) {
+                fileLines.add(line);
             }
 
-            System.out.println("Список строк из файла: " + fileLine);
+            System.out.println("Список строк из файла: " + fileLines);
         } catch (FileNotFoundException e) {
             System.out.println("Файл не найден!");
         } catch (IOException e) {
@@ -47,9 +47,9 @@ public class ArrayListHome {
         ArrayList<Integer> repeatingNumbers = new ArrayList<>(Arrays.asList(1, 2, 3, 1, 2, 3, 1, 2, 5, 4));
         System.out.println("Список с повторяющимися числами: " + repeatingNumbers);
 
-        ArrayList<Integer> nonRepeatingNumbers = new ArrayList<>();
+        ArrayList<Integer> nonRepeatingNumbers = new ArrayList<>(5);
 
-        for (int number: repeatingNumbers) {
+        for (Integer number: repeatingNumbers) {
             if (!nonRepeatingNumbers.contains(number)) {
                 nonRepeatingNumbers.add(number);
             }
