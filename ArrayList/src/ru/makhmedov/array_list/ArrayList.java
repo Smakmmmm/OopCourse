@@ -51,7 +51,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     @Override
-    public java.util.Iterator<E> iterator() {
+    public Iterator<E> iterator() {
         return new ArrayListIterator();
     }
 
@@ -350,6 +350,10 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public String toString() {
+        if (size == 0) {
+            return "[]";
+        }
+
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append('[');
 
@@ -367,11 +371,11 @@ public class ArrayList<E> implements List<E> {
         final int prime = 37;
         int hash = 1;
 
-        for (E item : items) {
-            if (item == null) {
+        for (int i = 0; i < size; i++) {
+            if (items[i] == null) {
                 hash = prime * hash;
             } else {
-                hash = prime * hash + item.hashCode();
+                hash = prime * hash + items[i].hashCode();
             }
         }
 
