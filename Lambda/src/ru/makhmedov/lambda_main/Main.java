@@ -7,12 +7,14 @@ import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
-        List<Person> persons = Arrays.asList(new Person("Максим", 26),
+        List<Person> persons = Arrays.asList(
+                new Person("Максим", 26),
                 new Person("Денис", 20),
                 new Person("Дмитрий", 33),
                 new Person("Виктория", 18),
                 new Person("Денис", 15),
-                new Person("Иван", 45));
+                new Person("Иван", 45)
+        );
 
         List<String> uniqueNames = persons.stream()
                 .map(Person::name)
@@ -31,16 +33,19 @@ public class Main {
         if (personsUnder18.isEmpty()) {
             System.out.println("Нет людей младше 18.");
         } else {
-            System.out.println(personsUnder18.stream().map(Person::name).collect(Collectors.joining(", ", "Имена людей младше 18 лет: ", ".")));
+            System.out.println(personsUnder18.stream()
+                    .map(Person::name)
+                    .collect(Collectors.joining(", ", "Имена людей младше 18 лет: ", ".")));
         }
 
         OptionalDouble averageAge = personsUnder18.stream()
-                .mapToInt(Person::age).average();
-        averageAge.ifPresentOrElse(x -> System.out.println("Средний возраст людей младше 18: " + x), () -> System.out.println("Нет людей младше 18."));
+                .mapToInt(Person::age)
+                .average();
+        averageAge.ifPresentOrElse(personsUnder18AverageAge -> System.out.println("Средний возраст людей младше 18: " + personsUnder18AverageAge), () -> System.out.println("Нет людей младше 18."));
 
-        Map<String, Double> averageAgeByNames = persons.stream()
+        Map<String, Double> averageAgesByNames = persons.stream()
                 .collect(Collectors.groupingBy(Person::name, Collectors.averagingInt(Person::age)));
-        System.out.println(averageAgeByNames);
+        System.out.println(averageAgesByNames);
 
         System.out.println("Люди возрастом от 20 до 45:");
         persons.stream()
