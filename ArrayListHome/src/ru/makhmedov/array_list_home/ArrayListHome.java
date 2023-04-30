@@ -47,7 +47,7 @@ public class ArrayListHome {
         ArrayList<Integer> repeatingNumbers = new ArrayList<>(Arrays.asList(1, 2, 3, 1, 2, 3, 1, 2, 5, 4));
         System.out.println("Список с повторяющимися числами: " + repeatingNumbers);
 
-        ArrayList<Integer> nonRepeatingNumbers = new ArrayList<>(5);
+        ArrayList<Integer> nonRepeatingNumbers = new ArrayList<>(repeatingNumbers.size());
 
         for (Integer number: repeatingNumbers) {
             if (!nonRepeatingNumbers.contains(number)) {
