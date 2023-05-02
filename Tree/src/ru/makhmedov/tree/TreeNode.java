@@ -1,11 +1,13 @@
 package ru.makhmedov.tree;
 
-import java.util.ArrayList;
-
 class TreeNode<T> {
     private TreeNode<T> left;
     private TreeNode<T> right;
     private T data;
+
+    public TreeNode(T data) {
+        this.data = data;
+    }
 
     public TreeNode<T> getLeft() {
         return left;
@@ -27,26 +29,13 @@ class TreeNode<T> {
         return data;
     }
 
+    @SuppressWarnings("unused")
     public void setData(T data) {
         this.data = data;
     }
 
     @Override
     public String toString() {
-        return "" + data;
-    }
-
-    public ArrayList<TreeNode<T>> getChildren() {
-        ArrayList<TreeNode<T>> children = new ArrayList<>();
-
-        if (left != null) {
-            children.add(left);
-        }
-
-        if (right != null) {
-            children.add(right);
-        }
-
-        return children;
+        return data.toString();
     }
 }

@@ -1,16 +1,21 @@
 package ru.makhmedov.tree;
 
-import java.util.LinkedList;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.*;
+import java.util.function.Consumer;
 
-public class BinaryTree<T extends Comparable<T>> {
+public class BinaryTree<T> {
     private TreeNode<T> root;
     private int size;
 
+    private final Comparator<? super T> comparator;
+
     public BinaryTree() {
-        root = new TreeNode<>();
+        comparator = null;
+    }
+
+    @SuppressWarnings("unused")
+    public BinaryTree(Comparator<? super T> comparator) {
+        this.comparator = comparator;
     }
 
     @SafeVarargs
@@ -20,26 +25,42 @@ public class BinaryTree<T extends Comparable<T>> {
         }
     }
 
-    @SuppressWarnings("UnusedReturnValue")
-    public boolean add(T data) {
+    private int compare(T data, T currentNodeData) {
+        if (data == null && currentNodeData == null) {
+            return 0;
+        }
+
         if (data == null) {
-            return false;
+            return -1;
+        }
+
+        if (currentNodeData == null) {
+            return 1;
+        }
+
+        if (comparator != null) {
+            return comparator.compare(data, currentNodeData);
+        }
+
+        //noinspection unchecked
+        Comparable<? super T> comparable = (Comparable<? super T>) data;
+
+        return comparable.compareTo(currentNodeData);
+    }
+
+    public void add(T data) {
+        if (root == null) {
+            root = new TreeNode<>(data);
+            size++;
+
+            return;
         }
 
         TreeNode<T> currentNode = root;
-
-        if (currentNode.getData() == null) {
-            currentNode.setData(data);
-            size++;
-
-            return true;
-        }
-
-        TreeNode<T> addedNode = new TreeNode<>();
-        addedNode.setData(data);
+        TreeNode<T> addedNode = new TreeNode<>(data);
 
         while (true) {
-            if (data.compareTo(currentNode.getData()) < 0) {
+            if (compare(data, currentNode.getData()) < 0) {
                 if (currentNode.getLeft() != null) {
                     currentNode = currentNode.getLeft();
                     continue;
@@ -48,43 +69,7 @@ public class BinaryTree<T extends Comparable<T>> {
                 currentNode.setLeft(addedNode);
                 size++;
 
-                return true;
-            }
-
-            if (currentNode.getRight() == null) {
-                size++;
-                currentNode.setRight(addedNode);
-
-                return true;
-            }
-
-            currentNode = currentNode.getRight();
-        }
-    }
-
-    public TreeNode<T> find(T data) {
-        if (data == null) {
-            throw new IllegalArgumentException("Значение не может быть \"null\".");
-        }
-
-        if (size == 0) {
-            return null;
-        }
-
-        TreeNode<T> currentNode = root;
-
-        while (true) {
-            if (currentNode.getData().equals(data)) {
-                return currentNode;
-            }
-
-            if (data.compareTo(currentNode.getData()) < 0) {
-                if (currentNode.getLeft() != null) {
-                    currentNode = currentNode.getLeft();
-                    continue;
-                }
-
-                return null;
+                return;
             }
 
             if (currentNode.getRight() != null) {
@@ -92,7 +77,40 @@ public class BinaryTree<T extends Comparable<T>> {
                 continue;
             }
 
-            return null;
+            size++;
+            currentNode.setRight(addedNode);
+
+            return;
+        }
+    }
+
+    public boolean contains(T data) {
+        if (size == 0) {
+            return false;
+        }
+
+        TreeNode<T> currentNode = root;
+
+        while (true) {
+            if (compare(currentNode.getData(), data) == 0) {
+                return true;
+            }
+
+            if (compare(data, currentNode.getData()) < 0) {
+                if (currentNode.getLeft() != null) {
+                    currentNode = currentNode.getLeft();
+                    continue;
+                }
+
+                return false;
+            }
+
+            if (currentNode.getRight() != null) {
+                currentNode = currentNode.getRight();
+                continue;
+            }
+
+            return false;
         }
     }
 
@@ -102,32 +120,22 @@ public class BinaryTree<T extends Comparable<T>> {
 
     @SuppressWarnings("UnusedReturnValue")
     public boolean remove(T data) {
-        if (data == null) {
-            throw new IllegalArgumentException("Значение не может быть \"null\".");
-        }
-
         if (size == 0) {
             return false;
         }
 
         TreeNode<T> nodeToRemove = root;
-        TreeNode<T> parentNode = nodeToRemove;
-        boolean contain = false;
+        TreeNode<T> parentNode = null;
 
-        while (true) {
-            if (nodeToRemove.getData().equals(data)) {
-                contain = true;
-                break;
-            }
-
-            if (data.compareTo(nodeToRemove.getData()) < 0) {
+        while (compare(nodeToRemove.getData(), data) != 0) {
+            if (compare(data, nodeToRemove.getData()) < 0) {
                 if (nodeToRemove.getLeft() != null) {
                     parentNode = nodeToRemove;
                     nodeToRemove = nodeToRemove.getLeft();
                     continue;
                 }
 
-                break;
+                return false;
             }
 
             if (nodeToRemove.getRight() != null) {
@@ -136,21 +144,17 @@ public class BinaryTree<T extends Comparable<T>> {
                 continue;
             }
 
-            break;
-        }
-
-        if (!contain) {
             return false;
         }
 
-        if (nodeToRemove == root && nodeToRemove.getRight() == null && nodeToRemove.getLeft() == null) {
-            root = null;
-            size = 0;
-
-            return true;
-        }
-
         if (nodeToRemove.getLeft() == null && nodeToRemove.getRight() == null) {
+            if (parentNode == null) {
+                root = null;
+                size = 0;
+
+                return true;
+            }
+
             if (parentNode.getLeft() == nodeToRemove) {
                 parentNode.setLeft(null);
                 size--;
@@ -165,8 +169,15 @@ public class BinaryTree<T extends Comparable<T>> {
         }
 
         if ((nodeToRemove.getLeft() == null && nodeToRemove.getRight() != null) ||
-                nodeToRemove.getLeft() != null && nodeToRemove.getRight() == null) {
+                (nodeToRemove.getLeft() != null && nodeToRemove.getRight() == null)) {
             TreeNode<T> nodeToRemoveChild = Objects.requireNonNullElse(nodeToRemove.getLeft(), nodeToRemove.getRight());
+
+            if (parentNode == null) {
+                root = nodeToRemoveChild;
+                size--;
+
+                return true;
+            }
 
             if (parentNode.getLeft() == nodeToRemove) {
                 parentNode.setLeft(nodeToRemoveChild);
@@ -189,7 +200,9 @@ public class BinaryTree<T extends Comparable<T>> {
             minLeftNode = minLeftNode.getLeft();
         }
 
-        if (parentNode.getLeft() == nodeToRemove) {
+        if (parentNode == null) {
+            root = minLeftNode;
+        } else if (parentNode.getLeft() == nodeToRemove) {
             parentNode.setLeft(minLeftNode);
         } else {
             parentNode.setRight(minLeftNode);
@@ -207,17 +220,17 @@ public class BinaryTree<T extends Comparable<T>> {
         return true;
     }
 
-    public void breadthTraversal() {
+    public void traverseInWidth(Consumer<T> action) {
+        if (root == null) {
+            return;
+        }
+
         Queue<TreeNode<T>> nodeQueue = new LinkedList<>();
         nodeQueue.add(root);
 
-        TreeNode<T> currentNode;
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append('[');
-
         while (!nodeQueue.isEmpty()) {
-            currentNode = nodeQueue.poll();
-            stringBuilder.append(currentNode).append(", ");
+            TreeNode<T> currentNode = nodeQueue.poll();
+            action.accept(currentNode.getData());
 
             if (currentNode.getLeft() != null) {
                 nodeQueue.add(currentNode.getLeft());
@@ -227,52 +240,47 @@ public class BinaryTree<T extends Comparable<T>> {
                 nodeQueue.add(currentNode.getRight());
             }
         }
-
-        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-        System.out.println(stringBuilder.append(']'));
     }
 
-    public void depthTraversal() {
-        Stack<TreeNode<T>> nodeStack = new Stack<>();
-        nodeStack.push(root);
+    public void traverseInDeep(Consumer<T> action) {
+        if (root == null) {
+            return;
+        }
 
-        TreeNode<T> currentNode;
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append('[');
+        Deque<TreeNode<T>> nodeDeque = new ArrayDeque<>();
+        nodeDeque.addFirst(root);
 
-        while (!nodeStack.empty()) {
-            currentNode = nodeStack.pop();
-            stringBuilder.append(currentNode).append(", ");
+        while (!nodeDeque.isEmpty()) {
+            TreeNode<T> currentNode = nodeDeque.removeFirst();
+            action.accept(currentNode.getData());
 
             if (currentNode.getRight() != null) {
-                nodeStack.push(currentNode.getRight());
+                nodeDeque.addFirst(currentNode.getRight());
             }
 
             if (currentNode.getLeft() != null) {
-                nodeStack.push(currentNode.getLeft());
+                nodeDeque.addFirst(currentNode.getLeft());
             }
         }
-
-        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-
-        System.out.println(stringBuilder.append(']'));
     }
 
-    public void depthTraversalRecursion() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append('[');
+    public void traverseInDeepRecursive(Consumer<T> action) {
+        if (root == null) {
+            return;
+        }
 
-        visit(root, stringBuilder);
-
-        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-        System.out.println(stringBuilder.append(']'));
+        visit(root, action);
     }
 
-    private void visit(TreeNode<T> node, StringBuilder stringBuilder) {
-        stringBuilder.append(node).append(", ");
+    private void visit(TreeNode<T> node, Consumer<T> action) {
+        action.accept(node.getData());
 
-        for (TreeNode<T> child : node.getChildren()) {
-            visit(child, stringBuilder);
+        if (node.getLeft() != null) {
+            visit(node.getLeft(), action);
+        }
+
+        if (node.getRight() != null) {
+            visit(node.getRight(), action);
         }
     }
 }
