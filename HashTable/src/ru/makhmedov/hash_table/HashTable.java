@@ -16,7 +16,7 @@ public class HashTable<E> implements Collection<E> {
 
     public HashTable(int tableSize) {
         if (tableSize <= 0) {
-            throw new IllegalArgumentException("Вместимость не может быть меньше 0, либо равным 0: " + tableSize);
+            throw new IllegalArgumentException("Вместимость должна быть больше 0. Текущее значение: " + tableSize);
         }
 
         //noinspection unchecked
@@ -60,13 +60,13 @@ public class HashTable<E> implements Collection<E> {
 
     private class HashTableIterator implements Iterator<E> {
         private final int expectedModCount = modCount;
-        private int currentNodeIndex;
+        private int currentItemIndex;
         private int currentListIndex;
         private Iterator<E> listIterator;
 
         @Override
         public boolean hasNext() {
-            return currentNodeIndex < size;
+            return currentItemIndex < size;
         }
 
         @Override
@@ -91,7 +91,7 @@ public class HashTable<E> implements Collection<E> {
                 }
             }
 
-            currentNodeIndex++;
+            currentItemIndex++;
 
             return listIterator.next();
         }
@@ -102,7 +102,7 @@ public class HashTable<E> implements Collection<E> {
         Object[] array = new Object[size];
         int i = 0;
 
-        for (E item: this){
+        for (E item : this) {
             array[i] = item;
             i++;
         }
@@ -122,6 +122,7 @@ public class HashTable<E> implements Collection<E> {
         for (E item : this) {
             //noinspection unchecked
             a[i] = (T) item;
+            i++;
         }
 
         if (a.length > size) {
@@ -150,6 +151,10 @@ public class HashTable<E> implements Collection<E> {
     @Override
     public boolean remove(Object o) {
         int index = getIndex(o);
+
+        if (lists[index] == null) {
+            return false;
+        }
 
         if (lists[index].remove(o)) {
             modCount++;
@@ -190,7 +195,7 @@ public class HashTable<E> implements Collection<E> {
             return false;
         }
 
-        boolean hasChanged = false;
+        int initialSize = size;
 
         for (LinkedList<E> item : lists) {
             if (item != null) {
@@ -198,16 +203,14 @@ public class HashTable<E> implements Collection<E> {
                 item.removeAll(c);
 
                 size -= listSize - item.size();
-
-                hasChanged = true;
             }
         }
 
-        if (hasChanged) {
+        if (initialSize != size) {
             modCount++;
         }
 
-        return hasChanged;
+        return initialSize != size;
     }
 
     @Override
@@ -216,7 +219,7 @@ public class HashTable<E> implements Collection<E> {
             return false;
         }
 
-        boolean hasChanged = false;
+        int initialSize = size;
 
         for (LinkedList<E> item : lists) {
             if (item != null) {
@@ -224,16 +227,14 @@ public class HashTable<E> implements Collection<E> {
                 item.retainAll(c);
 
                 size -= listSize - item.size();
-
-                hasChanged = true;
             }
         }
 
-        if (hasChanged) {
+        if (initialSize != size) {
             modCount++;
         }
 
-        return hasChanged;
+        return initialSize != size;
     }
 
     @Override

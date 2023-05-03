@@ -24,7 +24,7 @@ public class Main {
         anotherHashTable.add(null);
         System.out.println(anotherHashTable);
 
-        anotherHashTable.remove(null);
+        anotherHashTable.remove(6);
         System.out.println(anotherHashTable);
 
         System.out.println("Проверка RetainAll:");
@@ -53,7 +53,7 @@ public class Main {
 
         System.out.println("Проход итератором:");
         for (Integer number : hashTable) {
-            System.out.println(number + ", ");
+            System.out.println(number);
         }
     }
 }
