@@ -61,7 +61,7 @@ public class HashTable<E> implements Collection<E> {
     private class HashTableIterator implements Iterator<E> {
         private final int expectedModCount = modCount;
         private int currentItemIndex;
-        private int currentListIndex;
+        private int currentListIndex = -1;
         private Iterator<E> listIterator;
 
         @Override
@@ -81,13 +81,12 @@ public class HashTable<E> implements Collection<E> {
 
             if (listIterator == null || !listIterator.hasNext()) {
                 while (true) {
+                    currentListIndex++;
+
                     if (lists[currentListIndex] != null && !lists[currentListIndex].isEmpty()) {
                         listIterator = lists[currentListIndex].listIterator();
-                        currentListIndex++;
                         break;
                     }
-
-                    currentListIndex++;
                 }
             }
 
@@ -152,11 +151,7 @@ public class HashTable<E> implements Collection<E> {
     public boolean remove(Object o) {
         int index = getIndex(o);
 
-        if (lists[index] == null) {
-            return false;
-        }
-
-        if (lists[index].remove(o)) {
+        if (lists[index] != null && lists[index].remove(o)) {
             modCount++;
             size--;
             return true;
@@ -197,20 +192,22 @@ public class HashTable<E> implements Collection<E> {
 
         int initialSize = size;
 
-        for (LinkedList<E> item : lists) {
-            if (item != null) {
-                int listSize = item.size();
-                item.removeAll(c);
+        for (LinkedList<E> list : lists) {
+            if (list != null) {
+                int listSize = list.size();
+                list.removeAll(c);
 
-                size -= listSize - item.size();
+                size -= listSize - list.size();
             }
         }
 
         if (initialSize != size) {
             modCount++;
+
+            return true;
         }
 
-        return initialSize != size;
+        return false;
     }
 
     @Override

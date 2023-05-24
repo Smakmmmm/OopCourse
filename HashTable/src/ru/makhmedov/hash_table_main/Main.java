@@ -28,28 +28,28 @@ public class Main {
         System.out.println(anotherHashTable);
 
         System.out.println("Проверка RetainAll:");
-        List<Integer> list124 = new ArrayList<>();
-        anotherHashTable.retainAll(list124);
+        List<Integer> listForRetainAllCheck = new ArrayList<>();
+        anotherHashTable.retainAll(listForRetainAllCheck);
         System.out.println(anotherHashTable + " Размер: " + anotherHashTable.size());
 
         System.out.println("Проверка RemoveAll:");
-        List<Integer> list123 = new ArrayList<>(Arrays.asList(1, 543, 5));
-        hashTable.removeAll(list123);
+        List<Integer> listForRemoveAllCheck = new ArrayList<>(Arrays.asList(1, 543, 5));
+        hashTable.removeAll(listForRemoveAllCheck);
 
         System.out.println(hashTable);
         System.out.println("Size: " + hashTable.size());
 
-        Object[] tableInArray = hashTable.toArray();
+        Object[] array1 = hashTable.toArray();
 
-        System.out.println("В массив: " + Arrays.toString(tableInArray));
-        System.out.println("Array Size: " + tableInArray.length);
+        System.out.println("В массив: " + Arrays.toString(array1));
+        System.out.println("Array Size: " + array1.length);
 
         System.out.println("В массив вторым методом:");
-        Integer[] tableInArray2 = new Integer[7];
+        Integer[] array2 = new Integer[7];
 
-        tableInArray2 = hashTable.toArray(tableInArray2);
-        System.out.println("Size: " + tableInArray2.length);
-        System.out.println("Итог: " + Arrays.toString(tableInArray2));
+        array2 = hashTable.toArray(array2);
+        System.out.println("Size: " + array2.length);
+        System.out.println("Итог: " + Arrays.toString(array2));
 
         System.out.println("Проход итератором:");
         for (Integer number : hashTable) {
