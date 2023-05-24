@@ -14,7 +14,7 @@ public class Main {
 
         System.out.println("Обход в глубину без рекурсии:");
         stringBuilder.append('[');
-        binaryTree.traverseInDeep(consumer);
+        binaryTree.traverseInDepth(consumer);
 
         if (stringBuilder.length() > 1) {
             stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
@@ -26,7 +26,7 @@ public class Main {
 
 
         System.out.println("Обход в глубину через рекурсию:");
-        binaryTree.traverseInDeepRecursive(consumer);
+        binaryTree.traverseInDepthRecursive(consumer);
 
         if (stringBuilder.length() > 1) {
             stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
@@ -49,7 +49,7 @@ public class Main {
 
         System.out.println("Размер дерева: " + binaryTree.getSize());
 
-        binaryTree.remove(8);
+        System.out.println("Удаление 8: " + binaryTree.remove(8));
 
         System.out.println("Обход в ширину после удаления 8:");
         binaryTree.traverseInWidth(consumer);

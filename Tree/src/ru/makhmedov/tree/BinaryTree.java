@@ -3,52 +3,52 @@ package ru.makhmedov.tree;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class BinaryTree<T> {
-    private TreeNode<T> root;
+public class BinaryTree<E> {
+    private TreeNode<E> root;
     private int size;
 
-    private final Comparator<? super T> comparator;
+    private final Comparator<? super E> comparator;
 
     public BinaryTree() {
         comparator = null;
     }
 
     @SuppressWarnings("unused")
-    public BinaryTree(Comparator<? super T> comparator) {
+    public BinaryTree(Comparator<? super E> comparator) {
         this.comparator = comparator;
     }
 
     @SafeVarargs
-    public final void add(T... data) {
-        for (T d : data) {
+    public final void add(E... dataArray) {
+        for (E d : dataArray) {
             add(d);
         }
     }
 
-    private int compare(T data, T currentNodeData) {
-        if (data == null && currentNodeData == null) {
+    private int compare(E data1, E data2) {
+        if (comparator != null) {
+            return comparator.compare(data1, data2);
+        }
+
+        if (data1 == null && data2 == null) {
             return 0;
         }
 
-        if (data == null) {
+        if (data1 == null) {
             return -1;
         }
 
-        if (currentNodeData == null) {
+        if (data2 == null) {
             return 1;
         }
 
-        if (comparator != null) {
-            return comparator.compare(data, currentNodeData);
-        }
-
         //noinspection unchecked
-        Comparable<? super T> comparable = (Comparable<? super T>) data;
+        Comparable<? super E> comparable = (Comparable<? super E>) data1;
 
-        return comparable.compareTo(currentNodeData);
+        return comparable.compareTo(data2);
     }
 
-    public void add(T data) {
+    public void add(E data) {
         if (root == null) {
             root = new TreeNode<>(data);
             size++;
@@ -56,8 +56,8 @@ public class BinaryTree<T> {
             return;
         }
 
-        TreeNode<T> currentNode = root;
-        TreeNode<T> addedNode = new TreeNode<>(data);
+        TreeNode<E> currentNode = root;
+        TreeNode<E> addedNode = new TreeNode<>(data);
 
         while (true) {
             if (compare(data, currentNode.getData()) < 0) {
@@ -84,19 +84,21 @@ public class BinaryTree<T> {
         }
     }
 
-    public boolean contains(T data) {
+    public boolean contains(E data) {
         if (size == 0) {
             return false;
         }
 
-        TreeNode<T> currentNode = root;
+        TreeNode<E> currentNode = root;
 
         while (true) {
-            if (compare(currentNode.getData(), data) == 0) {
+            int comparisonResult = compare(data, currentNode.getData());
+
+            if (comparisonResult == 0) {
                 return true;
             }
 
-            if (compare(data, currentNode.getData()) < 0) {
+            if (comparisonResult < 0) {
                 if (currentNode.getLeft() != null) {
                     currentNode = currentNode.getLeft();
                     continue;
@@ -118,19 +120,24 @@ public class BinaryTree<T> {
         return size;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
-    public boolean remove(T data) {
+    public boolean remove(E data) {
         if (size == 0) {
             return false;
         }
 
-        TreeNode<T> nodeToRemove = root;
-        TreeNode<T> parentNode = null;
+        TreeNode<E> nodeToRemove = root;
+        TreeNode<E> nodeToRemoveParent = null;
 
-        while (compare(nodeToRemove.getData(), data) != 0) {
-            if (compare(data, nodeToRemove.getData()) < 0) {
+        while (true) {
+            int comparisonResult = compare(data, nodeToRemove.getData());
+
+            if (comparisonResult == 0) {
+                break;
+            }
+
+            if (comparisonResult < 0) {
                 if (nodeToRemove.getLeft() != null) {
-                    parentNode = nodeToRemove;
+                    nodeToRemoveParent = nodeToRemove;
                     nodeToRemove = nodeToRemove.getLeft();
                     continue;
                 }
@@ -139,7 +146,7 @@ public class BinaryTree<T> {
             }
 
             if (nodeToRemove.getRight() != null) {
-                parentNode = nodeToRemove;
+                nodeToRemoveParent = nodeToRemove;
                 nodeToRemove = nodeToRemove.getRight();
                 continue;
             }
@@ -148,21 +155,21 @@ public class BinaryTree<T> {
         }
 
         if (nodeToRemove.getLeft() == null && nodeToRemove.getRight() == null) {
-            if (parentNode == null) {
+            if (nodeToRemoveParent == null) {
                 root = null;
                 size = 0;
 
                 return true;
             }
 
-            if (parentNode.getLeft() == nodeToRemove) {
-                parentNode.setLeft(null);
+            if (nodeToRemoveParent.getLeft() == nodeToRemove) {
+                nodeToRemoveParent.setLeft(null);
                 size--;
 
                 return true;
             }
 
-            parentNode.setRight(null);
+            nodeToRemoveParent.setRight(null);
             size--;
 
             return true;
@@ -170,42 +177,42 @@ public class BinaryTree<T> {
 
         if ((nodeToRemove.getLeft() == null && nodeToRemove.getRight() != null) ||
                 (nodeToRemove.getLeft() != null && nodeToRemove.getRight() == null)) {
-            TreeNode<T> nodeToRemoveChild = Objects.requireNonNullElse(nodeToRemove.getLeft(), nodeToRemove.getRight());
+            TreeNode<E> nodeToRemoveChild = Objects.requireNonNullElse(nodeToRemove.getLeft(), nodeToRemove.getRight());
 
-            if (parentNode == null) {
+            if (nodeToRemoveParent == null) {
                 root = nodeToRemoveChild;
                 size--;
 
                 return true;
             }
 
-            if (parentNode.getLeft() == nodeToRemove) {
-                parentNode.setLeft(nodeToRemoveChild);
+            if (nodeToRemoveParent.getLeft() == nodeToRemove) {
+                nodeToRemoveParent.setLeft(nodeToRemoveChild);
                 size--;
 
                 return true;
             }
 
-            parentNode.setRight(nodeToRemoveChild);
+            nodeToRemoveParent.setRight(nodeToRemoveChild);
             size--;
 
             return true;
         }
 
-        TreeNode<T> minLeftNode = nodeToRemove.getRight();
-        TreeNode<T> minLeftParentNode = nodeToRemove;
+        TreeNode<E> minLeftNode = nodeToRemove.getRight();
+        TreeNode<E> minLeftParentNode = nodeToRemove;
 
         while (minLeftNode.getLeft() != null) {
             minLeftParentNode = minLeftNode;
             minLeftNode = minLeftNode.getLeft();
         }
 
-        if (parentNode == null) {
+        if (nodeToRemoveParent == null) {
             root = minLeftNode;
-        } else if (parentNode.getLeft() == nodeToRemove) {
-            parentNode.setLeft(minLeftNode);
+        } else if (nodeToRemoveParent.getLeft() == nodeToRemove) {
+            nodeToRemoveParent.setLeft(minLeftNode);
         } else {
-            parentNode.setRight(minLeftNode);
+            nodeToRemoveParent.setRight(minLeftNode);
         }
 
         if (minLeftNode != nodeToRemove.getRight()) {
@@ -220,51 +227,51 @@ public class BinaryTree<T> {
         return true;
     }
 
-    public void traverseInWidth(Consumer<T> action) {
+    public void traverseInWidth(Consumer<E> action) {
         if (root == null) {
             return;
         }
 
-        Queue<TreeNode<T>> nodeQueue = new LinkedList<>();
-        nodeQueue.add(root);
+        Queue<TreeNode<E>> queue = new LinkedList<>();
+        queue.add(root);
 
-        while (!nodeQueue.isEmpty()) {
-            TreeNode<T> currentNode = nodeQueue.poll();
+        while (!queue.isEmpty()) {
+            TreeNode<E> currentNode = queue.poll();
             action.accept(currentNode.getData());
 
             if (currentNode.getLeft() != null) {
-                nodeQueue.add(currentNode.getLeft());
+                queue.add(currentNode.getLeft());
             }
 
             if (currentNode.getRight() != null) {
-                nodeQueue.add(currentNode.getRight());
+                queue.add(currentNode.getRight());
             }
         }
     }
 
-    public void traverseInDeep(Consumer<T> action) {
+    public void traverseInDepth(Consumer<E> action) {
         if (root == null) {
             return;
         }
 
-        Deque<TreeNode<T>> nodeDeque = new ArrayDeque<>();
-        nodeDeque.addFirst(root);
+        Deque<TreeNode<E>> deque = new ArrayDeque<>();
+        deque.addFirst(root);
 
-        while (!nodeDeque.isEmpty()) {
-            TreeNode<T> currentNode = nodeDeque.removeFirst();
+        while (!deque.isEmpty()) {
+            TreeNode<E> currentNode = deque.removeFirst();
             action.accept(currentNode.getData());
 
             if (currentNode.getRight() != null) {
-                nodeDeque.addFirst(currentNode.getRight());
+                deque.addFirst(currentNode.getRight());
             }
 
             if (currentNode.getLeft() != null) {
-                nodeDeque.addFirst(currentNode.getLeft());
+                deque.addFirst(currentNode.getLeft());
             }
         }
     }
 
-    public void traverseInDeepRecursive(Consumer<T> action) {
+    public void traverseInDepthRecursive(Consumer<E> action) {
         if (root == null) {
             return;
         }
@@ -272,7 +279,7 @@ public class BinaryTree<T> {
         visit(root, action);
     }
 
-    private void visit(TreeNode<T> node, Consumer<T> action) {
+    private void visit(TreeNode<E> node, Consumer<E> action) {
         action.accept(node.getData());
 
         if (node.getLeft() != null) {
