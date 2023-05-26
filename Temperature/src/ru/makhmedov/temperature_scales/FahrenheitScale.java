@@ -1,6 +1,8 @@
-package ru.makhmedov.temperature_model;
+package ru.makhmedov.temperature_scales;
 
-public class Fahrenheit implements Scale {
+import ru.makhmedov.temperature_model.Scale;
+
+public class FahrenheitScale implements Scale {
     @Override
     public double convertToCelsius(double temperature) {
         return (temperature - 32) * 5 / 9;

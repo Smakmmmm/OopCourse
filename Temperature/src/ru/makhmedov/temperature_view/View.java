@@ -5,13 +5,13 @@ import ru.makhmedov.temperature_model.Scale;
 public interface View {
     void start();
 
-    Scale getInputScaleComboBox();
+    Scale getInputScale();
 
-    Scale getOutputScaleComboBox();
+    Scale getOutputScale();
 
     double getInputTemperature();
 
-    void updateTemperature(double outputTemperature);
+    void setOutputTemperature(double outputTemperature);
 
     void showError(String message);
 }

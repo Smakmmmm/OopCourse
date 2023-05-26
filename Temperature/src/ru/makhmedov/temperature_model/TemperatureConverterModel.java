@@ -7,4 +7,9 @@ public record TemperatureConverterModel(Scale[] scales) implements Model {
 
         return outputScale.convertFromCelsius(temperatureInCelsius);
     }
+
+    @Override
+    public Scale[] getScales() {
+        return scales;
+    }
 }

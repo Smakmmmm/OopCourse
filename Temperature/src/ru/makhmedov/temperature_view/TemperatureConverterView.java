@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class TemperatureConverterView implements View {
-    private final TemperatureConverterModel model;
+    private final Model model;
 
     private JTextField inputTextField;
     private JTextField outputTextField;
@@ -14,9 +14,7 @@ public class TemperatureConverterView implements View {
     private JComboBox<Scale> inputScaleComboBox;
     private JComboBox<Scale> outputScaleComboBox;
 
-    private double outputTemperature;
-
-    public TemperatureConverterView(TemperatureConverterModel model) {
+    public TemperatureConverterView(Model model) {
         this.model = model;
     }
 
@@ -29,16 +27,15 @@ public class TemperatureConverterView implements View {
             outputTextField.setEditable(false);
             outputTextField.setHorizontalAlignment(JTextField.CENTER);
 
-            inputScaleComboBox = new JComboBox<>(model.scales());
-            outputScaleComboBox = new JComboBox<>(model.scales());
+            inputScaleComboBox = new JComboBox<>(model.getScales());
+            outputScaleComboBox = new JComboBox<>(model.getScales());
 
             convertButton = new JButton("Конвертировать");
             convertButton.addActionListener(e -> {
                 try {
-                    outputTemperature = model.convertTemperature(getInputScaleComboBox(),
-                            getOutputScaleComboBox(),
-                            getInputTemperature());
-                    updateTemperature(outputTemperature);
+                    setOutputTemperature(model.convertTemperature(getInputScale(),
+                            getOutputScale(),
+                            getInputTemperature()));
                 } catch (NumberFormatException exception) {
                     showError("Температура должна быть числом!");
                 }
@@ -46,6 +43,7 @@ public class TemperatureConverterView implements View {
 
             JFrame frame = new JFrame("Конвертер температур");
             frame.setSize(500, 300);
+            frame.setMinimumSize(new Dimension(500, 300));
             frame.setVisible(true);
             frame.setLocationRelativeTo(null);
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -60,8 +58,14 @@ public class TemperatureConverterView implements View {
             constraints.gridwidth = GridBagConstraints.REMAINDER;
             constraints.gridx = GridBagConstraints.WEST;
             constraints.gridy = GridBagConstraints.NORTH;
-            constraints.insets = new Insets(20, 0, 0, 200);
 
+            constraints.insets = new Insets(0, 50, 0, 200);
+            frame.add(new JLabel("Входная температура"), constraints);
+
+            constraints.insets = new Insets(0, 250, 0, 0);
+            frame.add(new JLabel("Выходная температура"), constraints);
+
+            constraints.insets = new Insets(20, 0, 0, 200);
             frame.add(inputTextField, constraints);
             constraints.gridy += 1;
 
@@ -82,12 +86,12 @@ public class TemperatureConverterView implements View {
     }
 
     @Override
-    public Scale getInputScaleComboBox() {
+    public Scale getInputScale() {
         return (Scale) inputScaleComboBox.getSelectedItem();
     }
 
     @Override
-    public Scale getOutputScaleComboBox() {
+    public Scale getOutputScale() {
         return (Scale) outputScaleComboBox.getSelectedItem();
     }
 
@@ -97,7 +101,7 @@ public class TemperatureConverterView implements View {
     }
 
     @Override
-    public void updateTemperature(double outputTemperature) {
+    public void setOutputTemperature(double outputTemperature) {
         outputTextField.setText(String.valueOf(outputTemperature));
     }
 

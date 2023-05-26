@@ -1,6 +1,8 @@
-package ru.makhmedov.temperature_model;
+package ru.makhmedov.temperature_scales;
 
-public class Celsius implements Scale {
+import ru.makhmedov.temperature_model.Scale;
+
+public class CelsiusScale implements Scale {
     @Override
     public double convertToCelsius(double temperature) {
         return temperature;
