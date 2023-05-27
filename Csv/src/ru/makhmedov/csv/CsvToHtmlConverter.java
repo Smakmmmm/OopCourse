@@ -5,46 +5,43 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class CSV {
-    public static void convertToHTML(String filePath, String pathToSave) throws IOException {
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
-             PrintWriter printWriter = new PrintWriter(pathToSave)) {
+public class CsvToHtmlConverter {
+    public static void convertToHTML(String pathToCsv, String pathToHtml) throws IOException {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(pathToCsv));
+             PrintWriter printWriter = new PrintWriter(pathToHtml)) {
 
-            printWriter.print("<!DOCTYPE html>");
-            printWriter.print("<html lang =\"en\">");
-            printWriter.print("<head>");
-            printWriter.print("<meta charset=\"UTF-8\">");
-            printWriter.print("<title>CSV</title>");
-            printWriter.print("</head>");
-            printWriter.print("<body>");
-            printWriter.print("<table>");
+            printWriter.print("<!DOCTYPE html>" + System.lineSeparator());
+            printWriter.print("<html lang=\"en\">" + System.lineSeparator());
+            printWriter.print("<head>" + System.lineSeparator());
+            printWriter.print("\t<meta charset=\"UTF-8\">" + System.lineSeparator());
+            printWriter.print("\t<title>CSV</title>" + System.lineSeparator());
+            printWriter.print("</head>" + System.lineSeparator());
+            printWriter.print("<body>" + System.lineSeparator());
+            printWriter.print("<table>" + System.lineSeparator());
 
-            char currentSymbol;
-            char nextSymbol = 0;
-            boolean needStringTag = true;
+            boolean needRowTag = true;
             boolean needCellTag = true;
             String currentString;
 
             boolean isQuoteSymbol = false;
 
             while ((currentString = bufferedReader.readLine()) != null) {
-                if (currentString.length() == 0) {
-                    printWriter.print("<tr></tr>");
+                char currentSymbol;
+                char nextSymbol = 0;
 
+                if (currentString.length() == 0) {
                     continue;
                 }
 
-                if (needStringTag) {
-                    stringTag(0, printWriter);
+                if (needRowTag) {
+                    printWriter.print("\t<tr>" + System.lineSeparator());
                 }
 
                 if (needCellTag) {
-                    cellTag(0, printWriter);
+                    printWriter.print("\t\t<td>");
                 }
 
-                int i = 0;
-
-                for (; i < currentString.length(); i++) {
+                for (int i = 0; i < currentString.length(); i++) {
                     currentSymbol = currentString.charAt(i);
 
                     if (currentSymbol == '<') {
@@ -70,7 +67,7 @@ public class CSV {
                     }
 
                     if (currentSymbol == '\"' && !isQuoteSymbol) {
-                        needStringTag = false;
+                        needRowTag = false;
                         needCellTag = false;
 
                         isQuoteSymbol = true;
@@ -79,7 +76,7 @@ public class CSV {
                     }
 
                     if (currentSymbol == '\"' && nextSymbol != '\"') {
-                        needStringTag = true;
+                        needRowTag = true;
                         needCellTag = true;
 
                         isQuoteSymbol = false;
@@ -96,12 +93,21 @@ public class CSV {
                     }
 
                     if (currentSymbol == ',' && !isQuoteSymbol) {
-                        printWriter.print("</td><td>");
+                        printWriter.print("</td>" + System.lineSeparator() + "\t\t<td>");
 
                         continue;
                     }
 
                     printWriter.print(currentSymbol);
+
+                    if (isQuoteSymbol && currentString.charAt(currentString.length() - 1) == '\"') {
+                        needRowTag = true;
+                        needCellTag = true;
+
+                        nextSymbol = 0;
+
+                        continue;
+                    }
 
                     if (isQuoteSymbol && i == currentString.length() - 1) {
                         printWriter.print("<br/>");
@@ -109,46 +115,28 @@ public class CSV {
                 }
 
                 if (needCellTag) {
-                    cellTag(currentString.length(), printWriter);
+                    printWriter.print("</td>" + System.lineSeparator());
                 }
 
-                if (needStringTag) {
-                    stringTag(currentString.length(), printWriter);
+                if (needRowTag) {
+                    printWriter.print("\t</tr>" + System.lineSeparator());
                 }
             }
 
-            printWriter.print("</table>");
-            printWriter.print("</body>");
+            printWriter.print("</table>" + System.lineSeparator());
+            printWriter.print("</body>" + System.lineSeparator());
             printWriter.print("</html>");
         }
     }
 
-    public static void stringTag(int symbolIndex, PrintWriter printWriter) {
-        if (symbolIndex == 0) {
-            printWriter.print("<tr>");
-
-            return;
-        }
-
-        printWriter.print("</tr>");
-    }
-
-    public static void cellTag(int symbolIndex, PrintWriter printWriter) {
-        if (symbolIndex == 0) {
-            printWriter.print("<td>");
-
-            return;
-        }
-
-        printWriter.print("</td>");
-    }
-
     public static void main(String[] args) {
+        String pathToCsv = "InputCsv.csv";
+        String pathToHtml = "OutputHtml.html";
+
         try {
-            convertToHTML("CSV/src/ru/makhmedov/csv/InputCSV.csv",
-                    "CSV/src/ru/makhmedov/csv/OutputHTML.html");
+            convertToHTML(pathToCsv, pathToHtml);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Произошла ошибка. " + e.getMessage());
         }
     }
 }
