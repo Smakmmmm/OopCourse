@@ -4,99 +4,96 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 
 public class Graph {
-    public static void main(String[] args) {
-        int[][] graph = {
-                {0, 1, 0, 0, 0, 0, 0, 0},
-                {1, 0, 0, 0, 1, 1, 0, 0},
-                {0, 0, 0, 0, 0, 0, 1, 0},
-                {0, 0, 0, 0, 0, 0, 1, 0},
-                {0, 1, 0, 0, 0, 1, 0, 1},
-                {0, 1, 0, 0, 1, 0, 0, 0},
-                {0, 0, 1, 1, 0, 0, 0, 0},
-                {0, 0, 0, 0, 1, 0, 0, 0}
-        };
-
-        StringBuilder stringBuilder = new StringBuilder();
-        Consumer<Integer> consumer = node -> stringBuilder.append(node).append(", ");
-
-        stringBuilder.append('[');
-        traverseInWidth(consumer, graph);
-        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-        stringBuilder.append(']');
-        System.out.println("Обход графа в ширину:");
-        System.out.println(stringBuilder);
-
-        stringBuilder.delete(1, stringBuilder.length());
-        traverseInDeep(consumer, graph);
-        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-        stringBuilder.append(']');
-        System.out.println("Обход графа в глубину:");
-        System.out.println(stringBuilder);
+    private void checkGraphSize(int[][] connectivityMatrix) {
+        if (connectivityMatrix.length == 0) {
+            throw new IllegalArgumentException("Граф не должен быть пустым.");
+        }
     }
 
-    public static void traverseInWidth(Consumer<Integer> action, int[][] graph) {
-        boolean[] visited = new boolean[graph.length];
+    public void traverseInWidth(int[][] connectivityMatrix, IntConsumer action) {
+        checkGraphSize(connectivityMatrix);
 
-        Queue<Integer> graphNodeQueue = new LinkedList<>();
-        graphNodeQueue.add(0);
+        boolean[] visited = new boolean[connectivityMatrix.length];
 
-        while (!graphNodeQueue.isEmpty()) {
-            int currentNode = graphNodeQueue.poll();
-            action.accept(currentNode);
-            visited[currentNode] = true;
+        Queue<Integer> graphVertexQueue = new LinkedList<>();
 
-            for (int i = 0; i < graph.length; i++) {
-                if (visited[i]) {
+        for (int i = 0; i < visited.length; i++) {
+            if (!visited[i]) {
+                graphVertexQueue.add(i);
+            }
+
+            while (!graphVertexQueue.isEmpty()) {
+                int currentVertexIndex = graphVertexQueue.poll();
+
+                if (visited[currentVertexIndex]) {
                     continue;
                 }
 
-                if (graph[currentNode][i] == 1 && !graphNodeQueue.contains(i)) {
-                    graphNodeQueue.add(i);
-                }
-            }
+                action.accept(currentVertexIndex);
+                visited[currentVertexIndex] = true;
 
-            if (graphNodeQueue.isEmpty()) {
-                for (int i = 0; i < visited.length; i++) {
-                    if (!visited[i]) {
-                        graphNodeQueue.add(i);
-                        break;
+                for (int j = 0; j < connectivityMatrix.length; j++) {
+                    if (!visited[j] && connectivityMatrix[currentVertexIndex][j] == 1) {
+                        graphVertexQueue.add(j);
                     }
                 }
             }
         }
     }
 
-    public static void traverseInDeep(Consumer<Integer> action, int[][] graph) {
-        boolean[] visited = new boolean[graph.length];
+    public void traverseInDepth(int[][] connectivityMatrix, IntConsumer action) {
+        checkGraphSize(connectivityMatrix);
 
-        Deque<Integer> graphNodeDeque = new ArrayDeque<>();
-        graphNodeDeque.addFirst(0);
+        boolean[] visited = new boolean[connectivityMatrix.length];
 
-        while (!graphNodeDeque.isEmpty()) {
-            int currentNode = graphNodeDeque.removeFirst();
-            action.accept(currentNode);
-            visited[currentNode] = true;
+        Deque<Integer> graphVertexDeque = new ArrayDeque<>();
 
-            for (int i = 0; i < graph.length; i++) {
-                if (visited[i]) {
+        for (int i = 0; i < visited.length; i++) {
+            if (!visited[i]) {
+                graphVertexDeque.addFirst(i);
+            }
+
+            while (!graphVertexDeque.isEmpty()) {
+                int currentVertexIndex = graphVertexDeque.removeFirst();
+
+                if (visited[currentVertexIndex]) {
                     continue;
                 }
 
-                if (graph[currentNode][i] == 1 && !graphNodeDeque.contains(i)) {
-                    graphNodeDeque.addFirst(i);
-                }
-            }
+                action.accept(currentVertexIndex);
+                visited[currentVertexIndex] = true;
 
-            if (graphNodeDeque.isEmpty()) {
-                for (int i = 0; i < visited.length; i++) {
-                    if (!visited[i]) {
-                        graphNodeDeque.add(i);
-                        break;
+                for (int j = connectivityMatrix.length - 1; j >= 0; j--) {
+                    if (connectivityMatrix[currentVertexIndex][j] == 1 && !visited[j]) {
+                        graphVertexDeque.addFirst(j);
                     }
                 }
+            }
+        }
+    }
+
+    public void traverseInDepthRecursive(int[][] connectivityMatrix, IntConsumer action) {
+        checkGraphSize(connectivityMatrix);
+
+        boolean[] visited = new boolean[connectivityMatrix.length];
+
+        for (int i = 0; i < connectivityMatrix.length; i++) {
+            if (!visited[i]) {
+                visit(connectivityMatrix, i, visited, action);
+            }
+        }
+    }
+
+    private void visit(int[][] connectivityMatrix, int i, boolean[] visited, IntConsumer action) {
+        action.accept(i);
+        visited[i] = true;
+
+        for (int j = 0; j < connectivityMatrix.length; j++) {
+            if (connectivityMatrix[i][j] == 1 && !visited[j]) {
+                visit(connectivityMatrix, j, visited, action);
             }
         }
     }
