@@ -1,7 +1,7 @@
 package ru.makhmedov.matrix_main;
 
 import ru.makhmedov.matrix.Matrix;
-import ru.makhmedov.matrix.Vector;
+import ru.makhmedov.vector.Vector;
 
 public class Main {
     public static void main(String[] args) {
@@ -23,7 +23,7 @@ public class Main {
         };
 
         Matrix matrix2 = new Matrix(array2);
-        System.out.println("матрица 2: " + matrix2);
+        System.out.println("Матрица 2: " + matrix2);
         System.out.println("Количество строк матрицы 2: " + matrix2.getRowsCount());
         System.out.println("Количество столбцов матрицы 2: " + matrix2.getColumnsCount());
 
@@ -48,7 +48,7 @@ public class Main {
         Matrix matrix4 = new Matrix(array4);
 
         Matrix differenceResult = Matrix.getDifference(matrix1, matrix4);
-        System.out.println("Разность матриц 1 и 4" + differenceResult);
+        System.out.println("Разность матриц 1 и 4: " + differenceResult);
 
         System.out.println("Сумма матриц 1 и 4: " + Matrix.getSum(matrix1, matrix4));
 
@@ -61,8 +61,7 @@ public class Main {
         double[] array5 = {1, 2, 1};
         Vector vector1 = new Vector(array5);
 
-        matrix4.multiplyByVector(vector1);
-        System.out.println("Умножение матрицы 4 на вектор: " + matrix4);
+        System.out.println("Умножение матрицы 4 на вектор: " + matrix4.multiplyByVector(vector1));
 
         matrix4.multiplyByScalar(-1);
         System.out.println("Умножение на скаляр матрицы 4 (на -1): " + matrix4);
@@ -71,7 +70,7 @@ public class Main {
         System.out.println("Транспонирование матрицы 4: " + matrix4);
 
         Matrix matrix5 = new Matrix(matrix1);
-        matrix5.setVector(2, vector1);
+        matrix5.setRow(2, vector1);
         System.out.println("Установили в матрицу 5 вектор 1: " + matrix5);
 
         System.out.println();
