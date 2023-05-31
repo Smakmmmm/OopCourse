@@ -60,13 +60,13 @@ public class HashTable<E> implements Collection<E> {
 
     private class HashTableIterator implements Iterator<E> {
         private final int expectedModCount = modCount;
-        private int currentItemIndex;
+        private int visitedItemsCount;
         private int currentListIndex = -1;
         private Iterator<E> listIterator;
 
         @Override
         public boolean hasNext() {
-            return currentItemIndex < size;
+            return visitedItemsCount < size;
         }
 
         @Override
@@ -90,7 +90,7 @@ public class HashTable<E> implements Collection<E> {
                 }
             }
 
-            currentItemIndex++;
+            visitedItemsCount++;
 
             return listIterator.next();
         }
@@ -229,9 +229,11 @@ public class HashTable<E> implements Collection<E> {
 
         if (initialSize != size) {
             modCount++;
+
+            return true;
         }
 
-        return initialSize != size;
+        return false;
     }
 
     @Override
