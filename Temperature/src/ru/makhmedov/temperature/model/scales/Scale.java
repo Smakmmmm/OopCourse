@@ -1,4 +1,4 @@
-package ru.makhmedov.temperature_model;
+package ru.makhmedov.temperature.model.scales;
 
 public interface Scale {
     double convertToCelsius(double temperature);

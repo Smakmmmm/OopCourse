@@ -1,4 +1,6 @@
-package ru.makhmedov.temperature_model;
+package ru.makhmedov.temperature.model;
+
+import ru.makhmedov.temperature.model.scales.Scale;
 
 public record TemperatureConverterModel(Scale[] scales) implements Model {
     @Override

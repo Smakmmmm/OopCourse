@@ -1,6 +1,6 @@
-package ru.makhmedov.temperature_view;
+package ru.makhmedov.temperature.view;
 
-import ru.makhmedov.temperature_model.Scale;
+import ru.makhmedov.temperature.model.scales.Scale;
 
 public interface View {
     void start();

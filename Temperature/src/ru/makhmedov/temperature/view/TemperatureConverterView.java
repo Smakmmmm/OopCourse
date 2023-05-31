@@ -1,6 +1,7 @@
-package ru.makhmedov.temperature_view;
+package ru.makhmedov.temperature.view;
 
-import ru.makhmedov.temperature_model.*;
+import ru.makhmedov.temperature.model.Model;
+import ru.makhmedov.temperature.model.scales.Scale;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +34,8 @@ public class TemperatureConverterView implements View {
             convertButton = new JButton("Конвертировать");
             convertButton.addActionListener(e -> {
                 try {
-                    setOutputTemperature(model.convertTemperature(getInputScale(),
+                    setOutputTemperature(model.convertTemperature(
+                            getInputScale(),
                             getOutputScale(),
                             getInputTemperature()));
                 } catch (NumberFormatException exception) {
@@ -56,8 +58,8 @@ public class TemperatureConverterView implements View {
             constraints.fill = GridBagConstraints.NONE;
             constraints.gridheight = 1;
             constraints.gridwidth = GridBagConstraints.REMAINDER;
-            constraints.gridx = GridBagConstraints.WEST;
-            constraints.gridy = GridBagConstraints.NORTH;
+            constraints.gridx = 17;
+            constraints.gridy = 11;
 
             constraints.insets = new Insets(0, 50, 0, 200);
             frame.add(new JLabel("Входная температура"), constraints);
@@ -67,19 +69,19 @@ public class TemperatureConverterView implements View {
 
             constraints.insets = new Insets(20, 0, 0, 200);
             frame.add(inputTextField, constraints);
-            constraints.gridy += 1;
+            constraints.gridy++;
 
             frame.add(inputScaleComboBox, constraints);
 
             constraints.insets = new Insets(20, 200, 0, 0);
-            constraints.gridy = GridBagConstraints.NORTH;
-            constraints.gridx = GridBagConstraints.EAST;
+            constraints.gridy = 11;
+            constraints.gridx = 13;
             frame.add(outputTextField, constraints);
             constraints.gridy = 12;
             frame.add(outputScaleComboBox, constraints);
 
-            constraints.gridx = GridBagConstraints.CENTER;
-            constraints.gridy = GridBagConstraints.CENTER;
+            constraints.gridx = 10;
+            constraints.gridy = 10;
             constraints.insets = new Insets(0, 0, 25, 0);
             frame.add(convertButton, constraints);
         });

@@ -1,6 +1,4 @@
-package ru.makhmedov.temperature_scales;
-
-import ru.makhmedov.temperature_model.Scale;
+package ru.makhmedov.temperature.model.scales;
 
 public class CelsiusScale implements Scale {
     @Override
