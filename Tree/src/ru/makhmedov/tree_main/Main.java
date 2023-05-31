@@ -24,7 +24,6 @@ public class Main {
         System.out.println(stringBuilder);
         stringBuilder.delete(1, stringBuilder.length());
 
-
         System.out.println("Обход в глубину через рекурсию:");
         binaryTree.traverseInDepthRecursive(consumer);
 

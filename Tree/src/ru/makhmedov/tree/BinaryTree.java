@@ -20,8 +20,8 @@ public class BinaryTree<E> {
 
     @SafeVarargs
     public final void add(E... dataArray) {
-        for (E d : dataArray) {
-            add(d);
+        for (E data : dataArray) {
+            add(data);
         }
     }
 
@@ -77,8 +77,8 @@ public class BinaryTree<E> {
                 continue;
             }
 
-            size++;
             currentNode.setRight(addedNode);
+            size++;
 
             return;
         }
@@ -175,8 +175,7 @@ public class BinaryTree<E> {
             return true;
         }
 
-        if ((nodeToRemove.getLeft() == null && nodeToRemove.getRight() != null) ||
-                (nodeToRemove.getLeft() != null && nodeToRemove.getRight() == null)) {
+        if (nodeToRemove.getLeft() == null || nodeToRemove.getRight() == null) {
             TreeNode<E> nodeToRemoveChild = Objects.requireNonNullElse(nodeToRemove.getLeft(), nodeToRemove.getRight());
 
             if (nodeToRemoveParent == null) {
