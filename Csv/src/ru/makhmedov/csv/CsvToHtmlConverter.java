@@ -1,23 +1,19 @@
 package ru.makhmedov.csv;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 
 public class CsvToHtmlConverter {
     public static void convertToHTML(String pathToCsv, String pathToHtml) throws IOException {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(pathToCsv));
              PrintWriter printWriter = new PrintWriter(pathToHtml)) {
-
-            printWriter.print("<!DOCTYPE html>" + System.lineSeparator());
-            printWriter.print("<html lang=\"en\">" + System.lineSeparator());
-            printWriter.print("<head>" + System.lineSeparator());
-            printWriter.print("\t<meta charset=\"UTF-8\">" + System.lineSeparator());
-            printWriter.print("\t<title>CSV</title>" + System.lineSeparator());
-            printWriter.print("</head>" + System.lineSeparator());
-            printWriter.print("<body>" + System.lineSeparator());
-            printWriter.print("<table>" + System.lineSeparator());
+            printWriter.println("<!DOCTYPE html>");
+            printWriter.println("<html lang=\"en\">");
+            printWriter.println("<head>");
+            printWriter.println("\t<meta charset=\"UTF-8\">");
+            printWriter.println("\t<title>CSV</title>");
+            printWriter.println("</head>");
+            printWriter.println("<body>");
+            printWriter.println("<table>");
 
             boolean needRowTag = true;
             boolean needCellTag = true;
@@ -26,23 +22,22 @@ public class CsvToHtmlConverter {
             boolean isQuoteSymbol = false;
 
             while ((currentString = bufferedReader.readLine()) != null) {
-                char currentSymbol;
-                char nextSymbol = 0;
-
-                if (currentString.length() == 0) {
+                if (currentString.isEmpty()) {
                     continue;
                 }
 
                 if (needRowTag) {
-                    printWriter.print("\t<tr>" + System.lineSeparator());
+                    printWriter.println("\t<tr>");
                 }
 
                 if (needCellTag) {
                     printWriter.print("\t\t<td>");
                 }
 
+                char nextSymbol = 0;
+
                 for (int i = 0; i < currentString.length(); i++) {
-                    currentSymbol = currentString.charAt(i);
+                    char currentSymbol = currentString.charAt(i);
 
                     if (currentSymbol == '<') {
                         printWriter.print("&lt;");
@@ -93,7 +88,8 @@ public class CsvToHtmlConverter {
                     }
 
                     if (currentSymbol == ',' && !isQuoteSymbol) {
-                        printWriter.print("</td>" + System.lineSeparator() + "\t\t<td>");
+                        printWriter.println("</td>");
+                        printWriter.print("\t\t<td>");
 
                         continue;
                     }
@@ -115,26 +111,25 @@ public class CsvToHtmlConverter {
                 }
 
                 if (needCellTag) {
-                    printWriter.print("</td>" + System.lineSeparator());
+                    printWriter.println("</td>");
                 }
 
                 if (needRowTag) {
-                    printWriter.print("\t</tr>" + System.lineSeparator());
+                    printWriter.println("\t</tr>");
                 }
             }
 
-            printWriter.print("</table>" + System.lineSeparator());
-            printWriter.print("</body>" + System.lineSeparator());
+            printWriter.println("</table>");
+            printWriter.println("</body>");
             printWriter.print("</html>");
         }
     }
 
     public static void main(String[] args) {
-        String pathToCsv = "InputCsv.csv";
-        String pathToHtml = "OutputHtml.html";
-
         try {
-            convertToHTML(pathToCsv, pathToHtml);
+            convertToHTML(args[0], args[1]);
+        } catch (FileNotFoundException e) {
+            System.out.println("Файл не найден. Текущий путь: " + args[0]);
         } catch (IOException e) {
             System.out.println("Произошла ошибка. " + e.getMessage());
         }
