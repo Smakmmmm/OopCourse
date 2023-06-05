@@ -78,5 +78,28 @@ public class Main {
         Vector[] vectorsArray = {vector1, vector1, vector1};
         Matrix matrix6 = new Matrix(vectorsArray);
         System.out.println(matrix6);
+
+        System.out.println("Тест конструктора с массивом векторов:");
+        Vector[] vectors = {
+                new Vector(new double[]{1, 2, 3, 4}),
+                new Vector(new double[]{1}),
+                new Vector(new double[]{1, 2, 3, 4, 5, 6, 7})
+        };
+
+        Matrix matrix7 = new Matrix(vectors);
+        System.out.println(matrix7);
+
+        double[][] array6 = {
+                {6, 1, 0},
+                {10, 1, 5},
+                {15, 4, 30},
+                {2, 3, 4}
+        };
+
+        double[] array7 = {1, 2, 1};
+        Vector vector2 = new Vector(array7);
+        Matrix matrix8 = new Matrix(array6);
+        System.out.println("Тест умножения матрицы на вектор: " + matrix8.multiplyByVector(vector2));
+        System.out.println("Первая строка матрицы8: " + matrix8.getRow(0));
     }
 }
