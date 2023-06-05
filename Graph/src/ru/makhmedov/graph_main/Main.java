@@ -1,4 +1,4 @@
-package ru.makhmedov.main;
+package ru.makhmedov.graph_main;
 
 import ru.makhmedov.graph.Graph;
 
@@ -18,30 +18,34 @@ public class Main {
                 {0, 0, 1, 0, 0, 0, 0, 0, 0}
         };
 
-        Graph graph = new Graph();
+        Graph graph = new Graph(connectivityMatrix);
 
         StringBuilder stringBuilder = new StringBuilder();
         IntConsumer intConsumer = node -> stringBuilder.append(node).append(", ");
 
         stringBuilder.append('[');
-        graph.traverseInWidth(connectivityMatrix, intConsumer);
+        graph.traverseInWidth(intConsumer);
         stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
         stringBuilder.append(']');
         System.out.println("Обход графа в ширину:");
         System.out.println(stringBuilder);
 
         stringBuilder.delete(1, stringBuilder.length());
-        graph.traverseInDepth(connectivityMatrix, intConsumer);
+        graph.traverseInDepth(intConsumer);
         stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
         stringBuilder.append(']');
         System.out.println("Обход графа в глубину:");
         System.out.println(stringBuilder);
 
         stringBuilder.delete(1, stringBuilder.length());
-        graph.traverseInDepthRecursive(connectivityMatrix, intConsumer);
+        graph.traverseInDepthRecursive(intConsumer);
         stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
         stringBuilder.append(']');
         System.out.println("Обход графа в глубину рекурсивно:");
         System.out.println(stringBuilder);
+
+        Graph graph1 = new Graph();
+        System.out.println("Проверка случая, когда граф = null:");
+        graph1.traverseInDepthRecursive(intConsumer);
     }
 }

@@ -7,93 +7,115 @@ import java.util.Queue;
 import java.util.function.IntConsumer;
 
 public class Graph {
-    private void checkGraphSize(int[][] connectivityMatrix) {
-        if (connectivityMatrix.length == 0) {
-            throw new IllegalArgumentException("Граф не должен быть пустым.");
-        }
+    private final int[][] connectivityMatrix;
+
+    public Graph(int[][] connectivityMatrix) {
+        this.connectivityMatrix = connectivityMatrix;
     }
 
-    public void traverseInWidth(int[][] connectivityMatrix, IntConsumer action) {
-        checkGraphSize(connectivityMatrix);
+    public Graph() {
+        connectivityMatrix = null;
+    }
+
+    public void traverseInWidth(IntConsumer intConsumer) {
+        if (connectivityMatrix == null || connectivityMatrix.length == 0) {
+            System.out.println("Граф пуст.");
+            return;
+        }
 
         boolean[] visited = new boolean[connectivityMatrix.length];
 
-        Queue<Integer> graphVertexQueue = new LinkedList<>();
+        Queue<Integer> graphVerticesIndicesQueue = new LinkedList<>();
 
         for (int i = 0; i < visited.length; i++) {
             if (!visited[i]) {
-                graphVertexQueue.add(i);
+                graphVerticesIndicesQueue.add(i);
+            } else {
+                continue;
             }
 
-            while (!graphVertexQueue.isEmpty()) {
-                int currentVertexIndex = graphVertexQueue.poll();
+            while (!graphVerticesIndicesQueue.isEmpty()) {
+                int currentVertexIndex = graphVerticesIndicesQueue.poll();
 
                 if (visited[currentVertexIndex]) {
                     continue;
                 }
 
-                action.accept(currentVertexIndex);
+                intConsumer.accept(currentVertexIndex);
                 visited[currentVertexIndex] = true;
 
                 for (int j = 0; j < connectivityMatrix.length; j++) {
                     if (!visited[j] && connectivityMatrix[currentVertexIndex][j] == 1) {
-                        graphVertexQueue.add(j);
+                        graphVerticesIndicesQueue.add(j);
                     }
                 }
             }
         }
     }
 
-    public void traverseInDepth(int[][] connectivityMatrix, IntConsumer action) {
-        checkGraphSize(connectivityMatrix);
+    public void traverseInDepth(IntConsumer intConsumer) {
+        if (connectivityMatrix == null || connectivityMatrix.length == 0) {
+            System.out.println("Граф пуст.");
+            return;
+        }
 
         boolean[] visited = new boolean[connectivityMatrix.length];
 
-        Deque<Integer> graphVertexDeque = new ArrayDeque<>();
+        Deque<Integer> graphVerticesIndicesDeque = new ArrayDeque<>();
 
         for (int i = 0; i < visited.length; i++) {
             if (!visited[i]) {
-                graphVertexDeque.addFirst(i);
+                graphVerticesIndicesDeque.addFirst(i);
+            } else {
+                continue;
             }
 
-            while (!graphVertexDeque.isEmpty()) {
-                int currentVertexIndex = graphVertexDeque.removeFirst();
+            while (!graphVerticesIndicesDeque.isEmpty()) {
+                int currentVertexIndex = graphVerticesIndicesDeque.removeFirst();
 
                 if (visited[currentVertexIndex]) {
                     continue;
                 }
 
-                action.accept(currentVertexIndex);
+                intConsumer.accept(currentVertexIndex);
                 visited[currentVertexIndex] = true;
 
                 for (int j = connectivityMatrix.length - 1; j >= 0; j--) {
                     if (connectivityMatrix[currentVertexIndex][j] == 1 && !visited[j]) {
-                        graphVertexDeque.addFirst(j);
+                        graphVerticesIndicesDeque.addFirst(j);
                     }
                 }
             }
         }
     }
 
-    public void traverseInDepthRecursive(int[][] connectivityMatrix, IntConsumer action) {
-        checkGraphSize(connectivityMatrix);
+    public void traverseInDepthRecursive(IntConsumer intConsumer) {
+        if (connectivityMatrix == null || connectivityMatrix.length == 0) {
+            System.out.println("Граф пуст.");
+            return;
+        }
 
         boolean[] visited = new boolean[connectivityMatrix.length];
 
         for (int i = 0; i < connectivityMatrix.length; i++) {
             if (!visited[i]) {
-                visit(connectivityMatrix, i, visited, action);
+                visit(i, visited, intConsumer);
             }
         }
     }
 
-    private void visit(int[][] connectivityMatrix, int i, boolean[] visited, IntConsumer action) {
-        action.accept(i);
-        visited[i] = true;
+    private void visit(int vertexIndex, boolean[] visited, IntConsumer intConsumer) {
+        if (connectivityMatrix == null || connectivityMatrix.length == 0) {
+            System.out.println("Граф пуст.");
+            return;
+        }
 
-        for (int j = 0; j < connectivityMatrix.length; j++) {
-            if (connectivityMatrix[i][j] == 1 && !visited[j]) {
-                visit(connectivityMatrix, j, visited, action);
+        intConsumer.accept(vertexIndex);
+        visited[vertexIndex] = true;
+
+        for (int i = 0; i < connectivityMatrix.length; i++) {
+            if (connectivityMatrix[vertexIndex][i] == 1 && !visited[i]) {
+                visit(i, visited, intConsumer);
             }
         }
     }
