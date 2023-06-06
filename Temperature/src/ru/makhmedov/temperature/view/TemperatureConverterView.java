@@ -87,27 +87,22 @@ public class TemperatureConverterView implements View {
         });
     }
 
-    @Override
     public Scale getInputScale() {
         return (Scale) inputScaleComboBox.getSelectedItem();
     }
 
-    @Override
     public Scale getOutputScale() {
         return (Scale) outputScaleComboBox.getSelectedItem();
     }
 
-    @Override
     public double getInputTemperature() {
         return Double.parseDouble(inputTextField.getText());
     }
 
-    @Override
     public void setOutputTemperature(double outputTemperature) {
         outputTextField.setText(String.valueOf(outputTemperature));
     }
 
-    @Override
     public void showError(String message) {
         JOptionPane.showMessageDialog(
                 convertButton,
