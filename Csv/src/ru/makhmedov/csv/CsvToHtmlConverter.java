@@ -3,7 +3,7 @@ package ru.makhmedov.csv;
 import java.io.*;
 
 public class CsvToHtmlConverter {
-    public static void convertToHTML(String pathToCsv, String pathToHtml) throws IOException {
+    public static void convertToHtml(String pathToCsv, String pathToHtml) throws IOException {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(pathToCsv));
              PrintWriter printWriter = new PrintWriter(pathToHtml)) {
             printWriter.println("<!DOCTYPE html>");
@@ -127,7 +127,9 @@ public class CsvToHtmlConverter {
 
     public static void main(String[] args) {
         try {
-            convertToHTML(args[0], args[1]);
+            convertToHtml(args[0], args[1]);
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Было передано неправильное количество аргументов. Необходимо: 2. Сейчас их количество: " + args.length + ".");
         } catch (FileNotFoundException e) {
             System.out.println("Файл не найден. Текущий путь: " + args[0]);
         } catch (IOException e) {
