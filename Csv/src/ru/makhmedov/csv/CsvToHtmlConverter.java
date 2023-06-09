@@ -127,8 +127,12 @@ public class CsvToHtmlConverter {
 
     public static void main(String[] args) {
         try {
+            if (args.length != 2) {
+                throw new IllegalArgumentException();
+            }
+
             convertToHtml(args[0], args[1]);
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println("Было передано неправильное количество аргументов. Необходимо: 2. Сейчас их количество: " + args.length + ".");
         } catch (FileNotFoundException e) {
             System.out.println("Файл не найден. Текущий путь: " + args[0]);
