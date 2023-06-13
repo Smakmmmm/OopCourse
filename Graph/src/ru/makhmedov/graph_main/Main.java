@@ -21,31 +21,31 @@ public class Main {
         Graph graph = new Graph(connectivityMatrix);
 
         StringBuilder stringBuilder = new StringBuilder();
-        IntConsumer intConsumer = node -> stringBuilder.append(node).append(", ");
+        IntConsumer consumer = node -> stringBuilder.append(node).append(", ");
 
         stringBuilder.append('[');
-        graph.traverseInWidth(intConsumer);
+        graph.traverseInWidth(consumer);
         stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
         stringBuilder.append(']');
         System.out.println("Обход графа в ширину:");
         System.out.println(stringBuilder);
 
         stringBuilder.delete(1, stringBuilder.length());
-        graph.traverseInDepth(intConsumer);
+        graph.traverseInDepth(consumer);
         stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
         stringBuilder.append(']');
         System.out.println("Обход графа в глубину:");
         System.out.println(stringBuilder);
 
         stringBuilder.delete(1, stringBuilder.length());
-        graph.traverseInDepthRecursive(intConsumer);
+        graph.traverseInDepthRecursive(consumer);
         stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
         stringBuilder.append(']');
         System.out.println("Обход графа в глубину рекурсивно:");
         System.out.println(stringBuilder);
 
-        Graph graph1 = new Graph();
-        System.out.println("Проверка случая, когда граф = null:");
-        graph1.traverseInDepthRecursive(intConsumer);
+        Graph graph1 = new Graph(new int[0][0]);
+        System.out.println("Проверка случая, когда граф пуст:");
+        graph1.traverseInDepthRecursive(consumer);
     }
 }

@@ -1,6 +1,5 @@
 package ru.makhmedov.graph;
 
-import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -10,16 +9,19 @@ public class Graph {
     private final int[][] connectivityMatrix;
 
     public Graph(int[][] connectivityMatrix) {
+        final int expectedColumnsCount = connectivityMatrix.length;
+
+        for (int[] matrix : connectivityMatrix) {
+            if (matrix.length != expectedColumnsCount) {
+                throw new IllegalArgumentException("Матрица связности должна быть квадратной!");
+            }
+        }
+
         this.connectivityMatrix = connectivityMatrix;
     }
 
-    public Graph() {
-        connectivityMatrix = null;
-    }
-
-    public void traverseInWidth(IntConsumer intConsumer) {
-        if (connectivityMatrix == null || connectivityMatrix.length == 0) {
-            System.out.println("Граф пуст.");
+    public void traverseInWidth(IntConsumer consumer) {
+        if (connectivityMatrix.length == 0) {
             return;
         }
 
@@ -28,11 +30,11 @@ public class Graph {
         Queue<Integer> graphVerticesIndicesQueue = new LinkedList<>();
 
         for (int i = 0; i < visited.length; i++) {
-            if (!visited[i]) {
-                graphVerticesIndicesQueue.add(i);
-            } else {
+            if (visited[i]) {
                 continue;
             }
+
+            graphVerticesIndicesQueue.add(i);
 
             while (!graphVerticesIndicesQueue.isEmpty()) {
                 int currentVertexIndex = graphVerticesIndicesQueue.poll();
@@ -41,7 +43,7 @@ public class Graph {
                     continue;
                 }
 
-                intConsumer.accept(currentVertexIndex);
+                consumer.accept(currentVertexIndex);
                 visited[currentVertexIndex] = true;
 
                 for (int j = 0; j < connectivityMatrix.length; j++) {
@@ -53,22 +55,21 @@ public class Graph {
         }
     }
 
-    public void traverseInDepth(IntConsumer intConsumer) {
-        if (connectivityMatrix == null || connectivityMatrix.length == 0) {
-            System.out.println("Граф пуст.");
+    public void traverseInDepth(IntConsumer consumer) {
+        if (connectivityMatrix.length == 0) {
             return;
         }
 
         boolean[] visited = new boolean[connectivityMatrix.length];
 
-        Deque<Integer> graphVerticesIndicesDeque = new ArrayDeque<>();
+        Deque<Integer> graphVerticesIndicesDeque = new LinkedList<>();
 
         for (int i = 0; i < visited.length; i++) {
-            if (!visited[i]) {
-                graphVerticesIndicesDeque.addFirst(i);
-            } else {
+            if (visited[i]) {
                 continue;
             }
+
+            graphVerticesIndicesDeque.addFirst(i);
 
             while (!graphVerticesIndicesDeque.isEmpty()) {
                 int currentVertexIndex = graphVerticesIndicesDeque.removeFirst();
@@ -77,7 +78,7 @@ public class Graph {
                     continue;
                 }
 
-                intConsumer.accept(currentVertexIndex);
+                consumer.accept(currentVertexIndex);
                 visited[currentVertexIndex] = true;
 
                 for (int j = connectivityMatrix.length - 1; j >= 0; j--) {
@@ -89,9 +90,8 @@ public class Graph {
         }
     }
 
-    public void traverseInDepthRecursive(IntConsumer intConsumer) {
-        if (connectivityMatrix == null || connectivityMatrix.length == 0) {
-            System.out.println("Граф пуст.");
+    public void traverseInDepthRecursive(IntConsumer consumer) {
+        if (connectivityMatrix.length == 0) {
             return;
         }
 
@@ -99,23 +99,18 @@ public class Graph {
 
         for (int i = 0; i < connectivityMatrix.length; i++) {
             if (!visited[i]) {
-                visit(i, visited, intConsumer);
+                visit(i, visited, consumer);
             }
         }
     }
 
-    private void visit(int vertexIndex, boolean[] visited, IntConsumer intConsumer) {
-        if (connectivityMatrix == null || connectivityMatrix.length == 0) {
-            System.out.println("Граф пуст.");
-            return;
-        }
-
-        intConsumer.accept(vertexIndex);
+    private void visit(int vertexIndex, boolean[] visited, IntConsumer consumer) {
+        consumer.accept(vertexIndex);
         visited[vertexIndex] = true;
 
         for (int i = 0; i < connectivityMatrix.length; i++) {
             if (connectivityMatrix[vertexIndex][i] == 1 && !visited[i]) {
-                visit(i, visited, intConsumer);
+                visit(i, visited, consumer);
             }
         }
     }
