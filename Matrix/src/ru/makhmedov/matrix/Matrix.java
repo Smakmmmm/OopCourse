@@ -2,8 +2,6 @@ package ru.makhmedov.matrix;
 
 import ru.makhmedov.vector.Vector;
 
-import java.util.Arrays;
-
 public class Matrix {
     private Vector[] rows;
 
@@ -44,7 +42,7 @@ public class Matrix {
         rows = new Vector[array.length];
 
         for (int i = 0; i < rows.length; i++) {
-            rows[i] = new Vector(Arrays.copyOf(array[i], maxColumnsCount));
+            rows[i] = new Vector(maxColumnsCount, array[i]);
         }
     }
 
@@ -66,9 +64,7 @@ public class Matrix {
         for (int i = 0; i < rows.length; i++) {
             rows[i] = new Vector(maxColumnsCount);
 
-            for (int j = 0; j < vectorsArray[i].getSize(); j++) {
-                rows[i].setComponentByIndex(j, vectorsArray[i].getComponentByIndex(j));
-            }
+            rows[i].add(vectorsArray[i]);
         }
     }
 
@@ -81,33 +77,33 @@ public class Matrix {
     }
 
     private static Vector[] getVectorsArray(int rowsCount, int columnsCount) {
-        Vector[] resultMatrixRows = new Vector[rowsCount];
+        Vector[] vectorsArray = new Vector[rowsCount];
 
-        for (int i = 0; i < resultMatrixRows.length; i++) {
-            resultMatrixRows[i] = new Vector(columnsCount);
+        for (int i = 0; i < vectorsArray.length; i++) {
+            vectorsArray[i] = new Vector(columnsCount);
         }
 
-        return resultMatrixRows;
+        return vectorsArray;
     }
 
-    private void checkIndex(int index) {
+    private void checkRowIndex(int index) {
         if (index < 0 || index >= rows.length) {
             throw new IndexOutOfBoundsException("Index out of bounds. (0, " + (rows.length - 1) + "). Now it's: " + index);
         }
     }
 
     public Vector getRow(int index) {
-        checkIndex(index);
+        checkRowIndex(index);
 
         return new Vector(rows[index]);
     }
 
     public void setRow(int index, Vector vector) {
-        checkIndex(index);
+        checkRowIndex(index);
 
         if (vector.getSize() != getColumnsCount()) {
-            throw new IllegalArgumentException("The dimension of the vector must be equal to the number of columns of the matrix. Matrix columns count: "
-                    + getColumnsCount() + ". Vector dimension: " + vector.getSize() + ".");
+            throw new IllegalArgumentException("The size of the vector must be equal to the number of columns of the matrix. Matrix columns count: "
+                    + getColumnsCount() + ". Vector size: " + vector.getSize() + ".");
         }
 
         rows[index] = new Vector(vector);
@@ -131,7 +127,7 @@ public class Matrix {
         Vector[] changedMatrixRows = new Vector[getColumnsCount()];
 
         for (int i = 0; i < changedMatrixRows.length; i++) {
-            changedMatrixRows[i] = new Vector(getColumn(i));
+            changedMatrixRows[i] = getColumn(i);
         }
 
         rows = changedMatrixRows;
