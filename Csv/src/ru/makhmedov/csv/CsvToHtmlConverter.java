@@ -128,7 +128,8 @@ public class CsvToHtmlConverter {
     public static void main(String[] args) {
         try {
             if (args.length != 2) {
-                System.out.println("Было передано неправильное количество аргументов. Необходимо: 2. Сейчас их количество: " + args.length + ".");
+                System.out.println("Было передано неправильное количество аргументов. 1 - путь к csv файлу, 2 - путь к записи html." +
+                        " Необходимо: 2. Сейчас их количество: " + args.length + ".");
 
                 return;
             }
